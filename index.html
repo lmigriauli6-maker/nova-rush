@@ -3363,5 +3363,486 @@ document.getElementById("auth-login").onclick = async () => {
 })();
 </script>
 
+<style id="nova-premium-v2">
+  .nr-control-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 14px 0;
+    padding: 11px;
+    background: rgba(13, 14, 28, .96);
+    border: 1px solid rgba(151, 113, 214, .26);
+    border-radius: 12px;
+  }
+
+  .nr-control-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    align-items: center;
+  }
+
+  .nr-tool {
+    min-height: 36px;
+    padding: 8px 11px;
+    color: #e6e1f5;
+    background: #17172a;
+    border: 1px solid #34304c;
+    border-radius: 8px;
+    font: 700 11px system-ui, sans-serif;
+    cursor: pointer;
+  }
+
+  .nr-tool.active {
+    color: #9fffee;
+    border-color: #248e86;
+    background: #102b2b;
+  }
+
+  .nr-session {
+    color: #aaa5c1;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .nr-demo-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+    padding: 10px 12px;
+    color: #d4cce9;
+    background: #101322;
+    border: 1px solid #292942;
+    border-radius: 9px;
+    font: 11px/1.6 system-ui, sans-serif;
+  }
+
+  .nr-status-dot {
+    flex: 0 0 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #37e6b1;
+    box-shadow: 0 0 9px #37e6b1;
+  }
+
+  .nr-toast {
+    position: fixed;
+    z-index: 100000;
+    left: 50%;
+    bottom: 24px;
+    width: max-content;
+    max-width: calc(100% - 32px);
+    padding: 12px 16px;
+    transform: translateX(-50%);
+    color: #fff;
+    background: #19152a;
+    border: 1px solid #7653a8;
+    border-radius: 10px;
+    box-shadow: 0 10px 35px #0008;
+    font: 13px/1.5 system-ui, sans-serif;
+  }
+
+  .nr-session-dialog {
+    position: fixed;
+    inset: 0;
+    z-index: 100001;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: #05050be8;
+    backdrop-filter: blur(10px);
+  }
+
+  .nr-session-dialog[hidden] {
+    display: none;
+  }
+
+  .nr-session-card {
+    width: min(100%, 390px);
+    padding: 22px;
+    color: #f7f4ff;
+    background: #121225;
+    border: 1px solid #60458b;
+    border-radius: 15px;
+    font: 14px/1.65 system-ui, sans-serif;
+  }
+
+  .nr-session-card h2 {
+    margin-top: 0;
+    font-size: 20px;
+  }
+
+  .nr-session-card button {
+    width: 100%;
+    min-height: 42px;
+    margin-top: 10px;
+    color: white;
+    background: #702cbb;
+    border: 0;
+    border-radius: 9px;
+    font-weight: 800;
+  }
+
+  @media (max-width: 600px) {
+    .nr-control-strip {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .nr-control-group {
+      width: 100%;
+    }
+
+    .nr-tool {
+      flex: 1;
+    }
+  }
+
+  html.nr-reduced-motion *,
+  html.nr-reduced-motion *::before,
+  html.nr-reduced-motion *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+</style>
+
+<script id="nova-premium-v2-script">
+(() => {
+  if (window.__NOVA_PREMIUM_V2__) return;
+  window.__NOVA_PREMIUM_V2__ = true;
+
+  const translations = {
+    en: {
+      sound: "🔊 Sound", soundOff: "🔇 Sound off",
+      motion: "✨ Effects", motionOff: "◻ Effects off",
+      fullscreen: "⛶ Fullscreen", exitFullscreen: "⛶ Exit fullscreen",
+      session: "Session", demo: "DEMO MODE",
+      notice: "Virtual credits only. No real deposits or withdrawals.",
+      reminder: "You've been playing for 45 minutes. Consider taking a break.",
+      reminderTitle: "Take a short break?",
+      continue: "Continue demo", break: "Take a break",
+      full: "Fullscreen is unavailable in this browser.",
+      soundOn: "Sound enabled", soundDisabled: "Sound disabled",
+      effectsOn: "Effects enabled", effectsDisabled: "Effects disabled",
+      reset: "Session timer reset"
+    },
+    ka: {
+      sound: "🔊 ხმა", soundOff: "🔇 ხმა გამორთულია",
+      motion: "✨ ეფექტები", motionOff: "◻ ეფექტები გამორთულია",
+      fullscreen: "⛶ სრულეკრანიანი", exitFullscreen: "⛶ სრულეკრანიდან გამოსვლა",
+      session: "სესია", demo: "დემო რეჟიმი",
+      notice: "მხოლოდ ვირტუალური კრედიტები. რეალური დეპოზიტი და გატანა არ არის.",
+      reminder: "უკვე 45 წუთია თამაშობ. დაფიქრდი, ხომ არ გჭირდება შესვენება.",
+      reminderTitle: "მცირე შესვენება ხომ არ გინდა?",
+      continue: "დემო თამაშის გაგრძელება", break: "შესვენება",
+      full: "სრულეკრანიანი რეჟიმი ამ ბრაუზერში მიუწვდომელია.",
+      soundOn: "ხმა ჩართულია", soundDisabled: "ხმა გამორთულია",
+      effectsOn: "ეფექტები ჩართულია", effectsDisabled: "ეფექტები გამორთულია",
+      reset: "სესიის ტაიმერი განულებულია"
+    },
+    ru: {
+      sound: "🔊 Звук", soundOff: "🔇 Звук выключен",
+      motion: "✨ Эффекты", motionOff: "◻ Эффекты выключены",
+      fullscreen: "⛶ Полный экран", exitFullscreen: "⛶ Выйти из полного экрана",
+      session: "Сессия", demo: "ДЕМО-РЕЖИМ",
+      notice: "Только виртуальные кредиты. Реальных депозитов и выводов нет.",
+      reminder: "Вы играете уже 45 минут. Подумайте о перерыве.",
+      reminderTitle: "Сделать небольшой перерыв?",
+      continue: "Продолжить демо", break: "Сделать перерыв",
+      full: "Полноэкранный режим недоступен в этом браузере.",
+      soundOn: "Звук включён", soundDisabled: "Звук выключен",
+      effectsOn: "Эффекты включены", effectsDisabled: "Эффекты выключены",
+      reset: "Таймер сессии сброшен"
+    },
+    tr: {
+      sound: "🔊 Ses", soundOff: "🔇 Ses kapalı",
+      motion: "✨ Efektler", motionOff: "◻ Efektler kapalı",
+      fullscreen: "⛶ Tam ekran", exitFullscreen: "⛶ Tam ekrandan çık",
+      session: "Oturum", demo: "DEMO MODU",
+      notice: "Yalnızca sanal kredi. Gerçek para yatırma veya çekme yok.",
+      reminder: "45 dakikadır oynuyorsunuz. Bir mola vermeyi düşünün.",
+      reminderTitle: "Kısa bir mola verelim mi?",
+      continue: "Demoya devam et", break: "Mola ver",
+      full: "Bu tarayıcıda tam ekran kullanılamıyor.",
+      soundOn: "Ses açıldı", soundDisabled: "Ses kapatıldı",
+      effectsOn: "Efektler açıldı", effectsDisabled: "Efektler kapatıldı",
+      reset: "Oturum zamanlayıcısı sıfırlandı"
+    }
+  };
+
+  function language() {
+    try {
+      const stored = localStorage.getItem("nova-language") || "en";
+      return translations[stored] ? stored : "en";
+    } catch {
+      return "en";
+    }
+  }
+
+  const t = key => translations[language()][key] ||
+    translations.en[key] || key;
+
+  function getSetting(key, fallback) {
+    try {
+      const value = localStorage.getItem("nova-v2-" + key);
+      return value === null ? fallback : value === "true";
+    } catch {
+      return fallback;
+    }
+  }
+
+  function setSetting(key, value) {
+    try {
+      localStorage.setItem("nova-v2-" + key, String(value));
+    } catch {}
+  }
+
+  function toast(message) {
+    document.querySelector(".nr-toast")?.remove();
+
+    const el = document.createElement("div");
+    el.className = "nr-toast";
+    el.setAttribute("role", "status");
+    el.textContent = message;
+    document.body.appendChild(el);
+
+    setTimeout(() => el.remove(), 2600);
+  }
+
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remaining = seconds % 60;
+    return String(minutes).padStart(2, "0") + ":" +
+      String(remaining).padStart(2, "0");
+  }
+
+  function init() {
+    if (document.getElementById("nova-v2-toolbar")) return;
+
+    const app = document.querySelector(".app");
+    const header = app?.querySelector("header");
+    if (!app || !header) return;
+
+    const toolbar = document.createElement("section");
+    toolbar.id = "nova-v2-toolbar";
+    toolbar.className = "nr-control-strip";
+
+    toolbar.innerHTML = `
+      <div class="nr-control-group">
+        <button class="nr-tool" id="nr-sound" type="button"></button>
+        <button class="nr-tool" id="nr-motion" type="button"></button>
+        <button class="nr-tool" id="nr-fullscreen" type="button"></button>
+      </div>
+      <div class="nr-session">
+        <span id="nr-session-label"></span>:
+        <strong id="nr-session-time">00:00</strong>
+      </div>
+    `;
+
+    header.insertAdjacentElement("afterend", toolbar);
+
+    const status = document.createElement("div");
+    status.className = "nr-demo-status";
+    status.innerHTML = `
+      <span class="nr-status-dot"></span>
+      <span id="nr-demo-text"></span>
+    `;
+    toolbar.insertAdjacentElement("afterend", status);
+
+    const dialog = document.createElement("div");
+    dialog.className = "nr-session-dialog";
+    dialog.hidden = true;
+    dialog.innerHTML = `
+      <section class="nr-session-card" role="dialog"
+        aria-modal="true" aria-labelledby="nr-reminder-title">
+        <h2 id="nr-reminder-title"></h2>
+        <p id="nr-reminder-text"></p>
+        <button type="button" id="nr-take-break"></button>
+        <button type="button" id="nr-continue-demo"></button>
+      </section>
+    `;
+    document.body.appendChild(dialog);
+
+    let soundOn = getSetting("sound", false);
+    let motionOn = getSetting("motion", true);
+    let audioContext = null;
+    let startedAt;
+
+    try {
+      const savedStart = sessionStorage.getItem("nova-v2-session-start");
+      startedAt = savedStart ? Number(savedStart) : Date.now();
+
+      if (!Number.isFinite(startedAt) || startedAt > Date.now()) {
+        startedAt = Date.now();
+      }
+
+      sessionStorage.setItem(
+        "nova-v2-session-start", String(startedAt)
+      );
+    } catch {
+      startedAt = Date.now();
+    }
+
+    let reminderShown = false;
+
+    function updateButtons() {
+      const soundButton = document.getElementById("nr-sound");
+      soundButton.textContent = soundOn ? t("sound") : t("soundOff");
+      soundButton.classList.toggle("active", soundOn);
+      soundButton.setAttribute("aria-pressed", String(soundOn));
+
+      const motionButton = document.getElementById("nr-motion");
+      motionButton.textContent = motionOn ? t("motion") : t("motionOff");
+      motionButton.classList.toggle("active", !motionOn);
+      motionButton.setAttribute("aria-pressed", String(motionOn));
+
+      document.getElementById("nr-fullscreen").textContent =
+        document.fullscreenElement ? t("exitFullscreen") : t("fullscreen");
+
+      document.getElementById("nr-session-label").textContent = t("session");
+      document.getElementById("nr-demo-text").textContent =
+        t("demo") + " — " + t("notice");
+
+      document.getElementById("nr-reminder-title").textContent =
+        t("reminderTitle");
+      document.getElementById("nr-reminder-text").textContent =
+        t("reminder");
+      document.getElementById("nr-take-break").textContent = t("break");
+      document.getElementById("nr-continue-demo").textContent =
+        t("continue");
+
+      document.documentElement.classList.toggle(
+        "nr-reduced-motion", !motionOn
+      );
+    }
+
+    function beep() {
+      if (!soundOn) return;
+
+      try {
+        const Audio = window.AudioContext || window.webkitAudioContext;
+        if (!Audio) return;
+
+        audioContext ||= new Audio();
+
+        if (audioContext.state === "suspended") {
+          audioContext.resume();
+        }
+
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        oscillator.type = "sine";
+        oscillator.frequency.value = 660;
+        gain.gain.value = 0.035;
+
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+
+        oscillator.start();
+        gain.gain.exponentialRampToValueAtTime(
+          0.001, audioContext.currentTime + 0.07
+        );
+        oscillator.stop(audioContext.currentTime + 0.08);
+      } catch {}
+    }
+
+    document.getElementById("nr-sound").addEventListener("click", () => {
+      soundOn = !soundOn;
+      setSetting("sound", soundOn);
+      updateButtons();
+      if (soundOn) beep();
+      toast(soundOn ? t("soundOn") : t("soundDisabled"));
+    });
+
+    document.getElementById("nr-motion").addEventListener("click", () => {
+      motionOn = !motionOn;
+      setSetting("motion", motionOn);
+      updateButtons();
+      toast(motionOn ? t("effectsOn") : t("effectsDisabled"));
+    });
+
+    document.getElementById("nr-fullscreen").addEventListener("click", async () => {
+      try {
+        if (!document.fullscreenElement) {
+          await document.documentElement.requestFullscreen();
+        } else {
+          await document.exitFullscreen();
+        }
+      } catch {
+        toast(t("full"));
+      }
+      updateButtons();
+    });
+
+    document.addEventListener("fullscreenchange", updateButtons);
+
+    document.getElementById("nr-take-break").addEventListener("click", () => {
+      dialog.hidden = true;
+      toast(t("break"));
+      document.querySelector(".nr-control-strip")?.scrollIntoView({
+        behavior: motionOn ? "smooth" : "auto",
+        block: "start"
+      });
+    });
+
+    document.getElementById("nr-continue-demo").addEventListener("click", () => {
+      dialog.hidden = true;
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") dialog.hidden = true;
+    });
+
+    const langSelect = document.getElementById("nova-language-select");
+    langSelect?.addEventListener("change", updateButtons);
+
+    // Update the timer and remind the player after 45 minutes.
+    function tick() {
+      const elapsed = Math.max(0, Math.floor((Date.now() - startedAt) / 1000));
+      document.getElementById("nr-session-time").textContent =
+        formatTime(elapsed);
+
+      if (elapsed >= 45 * 60 && !reminderShown) {
+        reminderShown = true;
+        dialog.hidden = false;
+      }
+    }
+
+    updateButtons();
+    tick();
+    setInterval(tick, 1000);
+
+    // Optional click sound for interface controls only.
+    document.addEventListener("click", event => {
+      if (!soundOn) return;
+      const button = event.target.closest(
+        ".nr-tool, .nr-lobby-nav button, .nr-hero-action"
+      );
+      if (button && button.id !== "nr-sound") beep();
+    });
+
+    // Refresh translated labels if the existing language selector changes.
+    document.addEventListener("change", event => {
+      if (event.target.id === "nova-language-select") {
+        updateButtons();
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once: true });
+  } else {
+    init();
+  }
+})();
+</script>
+
 </body>
 </html>
