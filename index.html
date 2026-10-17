@@ -1930,5 +1930,233 @@ document.getElementById("auth-login").onclick = async () => {
 })();
 </script>
 
+<style id="nova-cyberpunk-theme">
+  :root {
+    --cy-bg: #05040d;
+    --cy-panel: #100b20;
+    --cy-purple: #a855f7;
+    --cy-pink: #ff2bd6;
+    --cy-blue: #00e5ff;
+    --cy-text: #f5edff;
+    --cy-muted: #b6a8ce;
+    --cy-border: rgba(0, 229, 255, .38);
+  }
+
+  html {
+    background: var(--cy-bg) !important;
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background:
+      radial-gradient(ellipse at 15% 0%, rgba(142, 45, 226, .19), transparent 42%),
+      radial-gradient(ellipse at 95% 40%, rgba(0, 229, 255, .09), transparent 35%),
+      #05040d !important;
+    color: var(--cy-text) !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  h1, h2, h3 {
+    color: var(--cy-text);
+    text-shadow: 0 0 12px rgba(168, 85, 247, .38);
+  }
+
+  h1 {
+    letter-spacing: 2px;
+  }
+
+  button, .button {
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .16s ease, box-shadow .16s ease,
+                border-color .16s ease, filter .16s ease;
+  }
+
+  button {
+    border: 1px solid rgba(0, 229, 255, .42);
+    border-radius: 11px;
+    color: #fff;
+    background: linear-gradient(110deg, #792cff, #bd25cb);
+    box-shadow: 0 0 12px rgba(168, 85, 247, .18);
+    font-weight: 700;
+  }
+
+  button:active {
+    transform: scale(.98);
+    filter: brightness(1.18);
+  }
+
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--cy-blue);
+    outline-offset: 3px;
+  }
+
+  input, select, textarea {
+    background: #0b0917 !important;
+    color: var(--cy-text) !important;
+    border: 1px solid rgba(168, 85, 247, .48) !important;
+    border-radius: 10px;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #9586ac;
+  }
+
+  /* Game arena */
+  .arena {
+    border: 1px solid rgba(0, 229, 255, .5) !important;
+    border-radius: 18px !important;
+    background:
+      linear-gradient(rgba(5, 4, 18, .35), rgba(5, 4, 18, .72)),
+      radial-gradient(ellipse at 50% 100%, rgba(255, 43, 214, .13), transparent 65%),
+      #080716 !important;
+    box-shadow:
+      0 0 12px rgba(0, 229, 255, .12),
+      0 0 32px rgba(168, 85, 247, .13),
+      inset 0 0 25px rgba(0, 229, 255, .035) !important;
+    overflow: hidden;
+  }
+
+  #rocket {
+    filter:
+      drop-shadow(0 0 8px rgba(0, 229, 255, .85))
+      drop-shadow(0 0 16px rgba(255, 43, 214, .5));
+  }
+
+  #mult {
+    color: #fff !important;
+    text-shadow:
+      0 0 8px var(--cy-blue),
+      0 0 24px var(--cy-purple);
+  }
+
+  /* Hamburger menu */
+  #nova-menu-button {
+    background: rgba(12, 8, 29, .94) !important;
+    border: 1px solid var(--cy-blue) !important;
+    color: var(--cy-blue) !important;
+    box-shadow: 0 0 16px rgba(0, 229, 255, .22) !important;
+    backdrop-filter: blur(12px);
+    z-index: 10001;
+  }
+
+  #nova-menu-overlay {
+    background:
+      radial-gradient(ellipse at top right, rgba(255, 43, 214, .11), transparent 45%),
+      rgba(5, 4, 13, .98) !important;
+    color: var(--cy-text) !important;
+    backdrop-filter: blur(18px);
+  }
+
+  #nova-menu-overlay .nm-item {
+    background: linear-gradient(110deg, #160d2b, #0b1526) !important;
+    border: 1px solid rgba(168, 85, 247, .45) !important;
+    color: var(--cy-text) !important;
+    border-radius: 11px !important;
+  }
+
+  #nova-menu-overlay .nm-item:active {
+    border-color: var(--cy-blue) !important;
+    box-shadow: 0 0 15px rgba(0, 229, 255, .2);
+  }
+
+  #nova-menu-overlay .nm-card,
+  #nova-menu-overlay .daily-xp,
+  #nova-menu-overlay .daily-mission,
+  #nova-menu-overlay .lv-card,
+  #nova-menu-overlay .lv-ach,
+  #nova-menu-overlay .st-card {
+    background: linear-gradient(145deg, #151027, #0b1222) !important;
+    border-color: rgba(168, 85, 247, .38) !important;
+    box-shadow: inset 0 0 18px rgba(168, 85, 247, .035);
+  }
+
+  #nova-menu-overlay .daily-claim,
+  #nova-menu-overlay .st-refresh {
+    background: linear-gradient(100deg, #812cff, #e52bbd) !important;
+    border: 1px solid rgba(0, 229, 255, .5) !important;
+    box-shadow: 0 0 13px rgba(168, 85, 247, .18);
+  }
+
+  #nova-menu-overlay .daily-fill,
+  #nova-menu-overlay .lv-fill,
+  #nova-menu-overlay .st-fill {
+    background: linear-gradient(90deg, #ff2bd6, #a855f7, #00e5ff) !important;
+    box-shadow: 0 0 10px rgba(0, 229, 255, .35);
+  }
+
+  #nova-menu-overlay .daily-bar,
+  #nova-menu-overlay .lv-bar,
+  #nova-menu-overlay .st-bar {
+    background: #211732 !important;
+  }
+
+  #nova-menu-overlay .daily-sub,
+  #nova-menu-overlay .st-sub {
+    color: var(--cy-blue) !important;
+    letter-spacing: 1px;
+  }
+
+  #nova-menu-overlay .lv-big,
+  #nova-menu-overlay .daily-xp strong {
+    color: #e9c4ff !important;
+    text-shadow: 0 0 14px rgba(255, 43, 214, .3);
+  }
+
+  #nova-menu-overlay .lv-muted,
+  #nova-menu-overlay .daily-meta,
+  #nova-menu-overlay .st-label,
+  #nova-menu-overlay .st-note {
+    color: var(--cy-muted) !important;
+  }
+
+  #nova-menu-overlay .lv-status {
+    color: #6dffe0 !important;
+  }
+
+  /* Login and registration */
+  #auth-panel {
+    border-color: rgba(168, 85, 247, .4);
+    border-radius: 16px;
+  }
+
+  /* Selection and scrollbar */
+  ::selection {
+    background: rgba(255, 43, 214, .4);
+    color: white;
+  }
+
+  * {
+    scrollbar-color: #7136a8 #090713;
+  }
+
+  @media (max-width: 600px) {
+    body {
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+
+    .arena {
+      border-radius: 14px !important;
+    }
+
+    #nova-menu-overlay {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    button, .button {
+      transition: none !important;
+    }
+
+    html {
+      scroll-behavior: auto;
+    }
+  }
+</style>
+
 </body>
 </html>
