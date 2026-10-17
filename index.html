@@ -2158,5 +2158,268 @@ document.getElementById("auth-login").onclick = async () => {
   }
 </style>
 
+<script>
+(() => {
+  if (document.getElementById('nova-live-effects')) return;
+
+  const arena = document.getElementById('arena');
+  const mult = document.getElementById('mult');
+  const status = document.getElementById('status');
+  const rocket = document.getElementById('rocket');
+
+  if (!arena || !mult || !status || !rocket) return;
+
+  const style = document.createElement('style');
+  style.id = 'nova-live-effects';
+  style.textContent = `
+    .arena {
+      isolation: isolate;
+    }
+
+    #nova-live-hud {
+      position: absolute;
+      z-index: 20;
+      left: 10px;
+      top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      pointer-events: none;
+    }
+
+    #nova-live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #a89bbd;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    #nova-live-label {
+      color: #e9ddff;
+      background: rgba(8, 5, 22, .88);
+      border: 1px solid rgba(168, 85, 247, .65);
+      border-radius: 7px;
+      padding: 6px 9px;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      backdrop-filter: blur(6px);
+    }
+
+    #nova-live-hud[data-state="flying"] #nova-live-dot {
+      background: #00f5ff;
+      color: #00f5ff;
+      animation: novaLivePulse .7s infinite alternate;
+    }
+
+    #nova-live-hud[data-state="crashed"] #nova-live-dot {
+      background: #ff3d82;
+      color: #ff3d82;
+    }
+
+    #nova-live-hud[data-state="cashed"] #nova-live-dot {
+      background: #65ffd0;
+      color: #65ffd0;
+    }
+
+    #nova-crash-flash {
+      position: absolute;
+      inset: 0;
+      z-index: 15;
+      pointer-events: none;
+      opacity: 0;
+      background: radial-gradient(
+        circle at 65% 35%,
+        rgba(255, 43, 214, .75),
+        rgba(0, 229, 255, .2) 35%,
+        transparent 70%
+      );
+    }
+
+    #nova-crash-flash.active {
+      animation: novaCrashFlash .65s ease-out;
+    }
+
+    .nova-crash-spark {
+      position: absolute;
+      z-index: 16;
+      left: var(--sx);
+      top: var(--sy);
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      pointer-events: none;
+      background: var(--sc);
+      box-shadow: 0 0 12px var(--sc);
+      animation: novaSparkFly .65s ease-out forwards;
+    }
+
+    #arena.nova-live-hot #mult {
+      text-shadow:
+        0 0 9px #00e5ff,
+        0 0 22px #a855f7;
+    }
+
+    #arena.nova-live-overdrive #mult {
+      text-shadow:
+        0 0 8px #fff,
+        0 0 18px #ff2bd6,
+        0 0 35px #a855f7;
+    }
+
+    #arena.nova-live-overdrive #rocket {
+      filter:
+        drop-shadow(0 0 10px #00e5ff)
+        drop-shadow(0 0 24px #ff2bd6)
+        drop-shadow(0 0 32px #a855f7);
+    }
+
+    @keyframes novaLivePulse {
+      from { opacity: .55; }
+      to { opacity: 1; }
+    }
+
+    @keyframes novaCrashFlash {
+      0% { opacity: 0; }
+      18% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes novaSparkFly {
+      from {
+        transform: translate(0, 0) scale(1.5);
+        opacity: 1;
+      }
+      to {
+        transform: translate(var(--dx), var(--dy)) scale(0);
+        opacity: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #nova-live-dot,
+      #nova-crash-flash,
+      .nova-crash-spark {
+        animation: none !important;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  const hud = document.createElement('div');
+  hud.id = 'nova-live-hud';
+  hud.dataset.state = 'waiting';
+  hud.innerHTML = `
+    <span id="nova-live-dot"></span>
+    <span id="nova-live-label">WAITING FOR LAUNCH</span>
+  `;
+
+  const flash = document.createElement('div');
+  flash.id = 'nova-crash-flash';
+  flash.setAttribute('aria-hidden', 'true');
+
+  arena.append(hud, flash);
+
+  let previousState = '';
+  let lastCrashText = '';
+
+  function getMultiplier() {
+    const match = mult.textContent.match(/\d+(?:\.\d+)?/);
+    return match ? Number(match[0]) : 1;
+  }
+
+  function setState(state, label) {
+    hud.dataset.state = state;
+    hud.querySelector('#nova-live-label').textContent = label;
+  }
+
+  function crashEffect() {
+    flash.classList.remove('active');
+    void flash.offsetWidth;
+    flash.classList.add('active');
+
+    const colors = ['#ff2bd6', '#00e5ff', '#a855f7', '#ffffff'];
+
+    for (let i = 0; i < 16; i++) {
+      const spark = document.createElement('i');
+      spark.className = 'nova-crash-spark';
+      spark.style.setProperty('--sx', (35 + Math.random() * 40) + '%');
+      spark.style.setProperty('--sy', (20 + Math.random() * 55) + '%');
+      spark.style.setProperty('--dx', (Math.random() * 180 - 90) + 'px');
+      spark.style.setProperty('--dy', (Math.random() * 150 - 75) + 'px');
+      spark.style.setProperty('--sc', colors[i % colors.length]);
+
+      arena.appendChild(spark);
+      spark.addEventListener('animationend', () => spark.remove(), {
+        once: true
+      });
+    }
+  }
+
+  function render() {
+    const text = status.textContent.toLowerCase();
+    const isPlaying =
+      document.getElementById('start')?.disabled &&
+      !document.getElementById('cash')?.disabled;
+
+    let state = 'waiting';
+    let label = 'WAITING FOR LAUNCH';
+
+    if (text.includes('crashed')) {
+      state = 'crashed';
+      label = 'CRASHED';
+
+      if (previousState !== 'crashed' || lastCrashText !== status.textContent) {
+        crashEffect();
+        lastCrashText = status.textContent;
+      }
+    } else if (text.includes('cash out') && !isPlaying) {
+      state = 'cashed';
+      label = 'CASHED OUT';
+    } else if (isPlaying) {
+      state = 'flying';
+      label = 'ROCKET IN FLIGHT';
+    } else if (text.includes('reset')) {
+      state = 'waiting';
+      label = 'READY FOR LAUNCH';
+    }
+
+    setState(state, label);
+    previousState = state;
+
+    const value = getMultiplier();
+    arena.classList.toggle('nova-live-hot', isPlaying && value >= 1.5);
+    arena.classList.toggle('nova-live-overdrive', isPlaying && value >= 3);
+  }
+
+  const observer = new MutationObserver(render);
+
+  observer.observe(status, {
+    childList: true,
+    characterData: true,
+    subtree: true
+  });
+
+  observer.observe(mult, {
+    childList: true,
+    characterData: true,
+    subtree: true
+  });
+
+  observer.observe(document.getElementById('start'), {
+    attributes: true,
+    attributeFilter: ['disabled']
+  });
+
+  observer.observe(document.getElementById('cash'), {
+    attributes: true,
+    attributeFilter: ['disabled']
+  });
+
+  render();
+})();
+</script>
+
 </body>
 </html>
