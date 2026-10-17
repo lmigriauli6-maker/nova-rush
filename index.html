@@ -1765,5 +1765,170 @@ document.getElementById("auth-login").onclick = async () => {
 })();
 </script>
 
+<script>
+(() => {
+  const menu = document.querySelector('#nova-menu-overlay');
+  if (!menu || document.getElementById('nova-stats-style')) return;
+
+  const style = document.createElement('style');
+  style.id = 'nova-stats-style';
+  style.textContent = `
+    #nova-stats { color:#f3edff; padding:16px 0; }
+    #nova-stats h2 { color:#d9b8ff; margin:8px 0 5px; }
+    #nova-stats .st-sub { color:#a5e7ff; font-size:12px; margin-bottom:16px; }
+    #nova-stats .st-grid {
+      display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px; margin:14px 0;
+    }
+    #nova-stats .st-card {
+      min-width:0; padding:14px; border-radius:14px;
+      background:linear-gradient(140deg,#211544,#101a36);
+      border:1px solid #57418e;
+    }
+    #nova-stats .st-label { color:#b9b4d5; font-size:11px; }
+    #nova-stats .st-value {
+      color:#e3d3ff; font-size:24px; font-weight:800;
+      margin-top:7px; overflow-wrap:anywhere;
+    }
+    #nova-stats .st-wide { grid-column:1/-1; }
+    #nova-stats .st-bar {
+      height:9px; background:#30264d; border-radius:9px;
+      overflow:hidden; margin-top:10px;
+    }
+    #nova-stats .st-fill {
+      height:100%; width:0;
+      background:linear-gradient(90deg,#914cff,#39dfff);
+    }
+    #nova-stats .st-note {
+      font-size:12px; color:#aaa6ca; line-height:1.6;
+      margin-top:14px;
+    }
+    #nova-stats .st-refresh {
+      width:100%; padding:11px; border-radius:10px;
+      color:white; background:linear-gradient(110deg,#713dff,#287bff);
+      margin-top:12px;
+    }
+    @media(max-width:360px) {
+      #nova-stats .st-value { font-size:20px; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  let screen = menu.querySelector('[data-screen="stats"]');
+
+  if (!screen) {
+    screen = document.createElement('div');
+    screen.className = 'nm-page';
+    screen.dataset.screen = 'stats';
+    menu.appendChild(screen);
+  }
+
+  screen.innerHTML = `
+    <button class="nm-item nm-back" data-page="menu">← უკან მენიუში</button>
+    <div id="nova-stats">
+      <h2>📊 STATISTICS</h2>
+      <div class="st-sub">YOUR NOVA RUSH FLIGHT REPORT</div>
+
+      <div class="st-grid">
+        <div class="st-card">
+          <div class="st-label">🎮 TOTAL ROUNDS</div>
+          <div class="st-value" id="st-rounds">0</div>
+        </div>
+        <div class="st-card">
+          <div class="st-label">🏆 CASH OUTS</div>
+          <div class="st-value" id="st-wins">0</div>
+        </div>
+        <div class="st-card">
+          <div class="st-label">💥 FAILED ROUNDS*</div>
+          <div class="st-value" id="st-fails">0</div>
+        </div>
+        <div class="st-card">
+          <div class="st-label">📈 CASH OUT RATE</div>
+          <div class="st-value" id="st-rate">0%</div>
+        </div>
+        <div class="st-card st-wide">
+          <div class="st-label">🚀 BEST MULTIPLIER IN HISTORY</div>
+          <div class="st-value" id="st-best">—</div>
+        </div>
+        <div class="st-card">
+          <div class="st-label">💎 TOTAL XP</div>
+          <div class="st-value" id="st-xp">0</div>
+        </div>
+        <div class="st-card">
+          <div class="st-label">⭐ PILOT LEVEL</div>
+          <div class="st-value" id="st-level">1</div>
+        </div>
+        <div class="st-card st-wide">
+          <div class="st-label">CASH OUT RATE</div>
+          <div class="st-bar"><div class="st-fill" id="st-fill"></div></div>
+          <div class="st-note" id="st-summary">ითამაშე რაუნდი შენი სტატისტიკის სანახავად.</div>
+        </div>
+      </div>
+
+      <div class="st-note">
+        *Failed Rounds გამოითვლება რაუნდების რაოდენობასა და Cash Out-ებს შორის სხვაობით.
+        სტატისტიკა ეფუძნება ამ ბრაუზერში არსებულ თამაშის მონაცემებს.
+      </div>
+      <button class="st-refresh" id="st-refresh">↻ განაახლე სტატისტიკა</button>
+    </div>
+  `;
+
+  const num = id =>
+    Number(document.getElementById(id)?.textContent) || 0;
+
+  function readBest() {
+    const history = document.getElementById('history');
+    if (!history) return null;
+
+    const values = [...history.querySelectorAll('.pill')]
+      .map(el => {
+        const match = el.textContent.match(/(\d+(?:\.\d+)?)\s*x?/i);
+        return match ? Number(match[1]) : NaN;
+      })
+      .filter(n => Number.isFinite(n) && n > 0);
+
+    return values.length ? Math.max(...values) : null;
+  }
+
+  function render() {
+    const rounds = num('played');
+    const wins = num('wins');
+    const fails = Math.max(0, rounds - wins);
+    const rate = rounds ? Math.round(wins / rounds * 100) : 0;
+    const xp = Math.max(0, Number(localStorage.getItem('nova-rush-total-xp')) || 0);
+    const level = Math.floor(xp / 200) + 1;
+    const best = readBest();
+
+    screen.querySelector('#st-rounds').textContent = rounds;
+    screen.querySelector('#st-wins').textContent = wins;
+    screen.querySelector('#st-fails').textContent = fails;
+    screen.querySelector('#st-rate').textContent = rate + '%';
+    screen.querySelector('#st-best').textContent = best === null ? '—' : best.toFixed(2) + 'x';
+    screen.querySelector('#st-xp').textContent = xp;
+    screen.querySelector('#st-level').textContent = level;
+    screen.querySelector('#st-fill').style.width = rate + '%';
+
+    screen.querySelector('#st-summary').textContent =
+      rounds
+        ? `გათამაშებული რაუნდები: ${rounds} · წარმატებული Cash Out: ${wins} · სავარაუდო წარუმატებელი რაუნდები: ${fails}.`
+        : 'ჯერ რაუნდი არ გითამაშია. დაიწყე თამაში და დაბრუნდი აქ.';
+  }
+
+  screen.querySelector('#st-refresh').addEventListener('click', render);
+
+  const observer = new MutationObserver(render);
+  ['played', 'wins', 'history'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el, {
+      childList:true,
+      characterData:true,
+      subtree:true
+    });
+  });
+
+  render();
+})();
+</script>
+
 </body>
 </html>
