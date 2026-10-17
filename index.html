@@ -790,5 +790,102 @@ document.getElementById("auth-login").onclick = async () => {
 })();
 </script>
 
+<script>
+(() => {
+  const arena = document.querySelector('.arena');
+  const rocket = document.querySelector('#rocket');
+
+  if (!arena || !rocket || document.querySelector('#nova-engine-fx')) return;
+
+  const style = document.createElement('style');
+  style.id = 'nova-engine-fx';
+  style.textContent = `
+    .arena {
+      position: relative;
+      overflow: hidden;
+    }
+
+    #rocket {
+      transform-origin: center;
+      animation: novaRocketBoost 1.15s ease-in-out infinite alternate;
+      filter:
+        drop-shadow(0 0 8px #63eaff)
+        drop-shadow(0 0 18px #914dff);
+      will-change: transform;
+    }
+
+    @keyframes novaRocketBoost {
+      0% {
+        transform: translate(0, 0) rotate(-35deg) scale(1);
+      }
+      50% {
+        transform: translate(3px, -7px) rotate(-31deg) scale(1.035);
+      }
+      100% {
+        transform: translate(-2px, -13px) rotate(-28deg) scale(1.06);
+      }
+    }
+
+    #nova-engine-fx ~ .nova-flame {
+      pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #rocket { animation: none; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  let flame = document.querySelector('#nova-engine-flame');
+
+  if (!flame) {
+    flame = document.createElement('div');
+    flame.id = 'nova-engine-flame';
+    flame.setAttribute('aria-hidden', 'true');
+    flame.style.cssText = `
+      position: absolute;
+      width: 12px;
+      height: 34px;
+      border-radius: 50% 50% 65% 65%;
+      background: linear-gradient(to bottom, #e8fbff, #36c8ff 35%, #9b5cff 75%, transparent);
+      filter: blur(2px);
+      opacity: .85;
+      pointer-events: none;
+      z-index: 0;
+      animation: novaFlamePulse .13s ease-in-out infinite alternate;
+    `;
+
+    const flameStyle = document.createElement('style');
+    flameStyle.textContent = `
+      @keyframes novaFlamePulse {
+        from { transform: scaleX(.72) scaleY(.8); opacity: .65; }
+        to { transform: scaleX(1.25) scaleY(1.15); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(flameStyle);
+    arena.appendChild(flame);
+  }
+
+  function positionFlame() {
+    const a = arena.getBoundingClientRect();
+    const r = rocket.getBoundingClientRect();
+
+    if (!a.width || !r.width) return;
+
+    flame.style.left = (r.left - a.left + r.width * .42) + 'px';
+    flame.style.top = (r.top - a.top + r.height * .72) + 'px';
+  }
+
+  positionFlame();
+  window.addEventListener('resize', positionFlame);
+
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(positionFlame).observe(rocket);
+  }
+
+  setInterval(positionFlame, 120);
+})();
+</script>
+
 </body>
 </html>
