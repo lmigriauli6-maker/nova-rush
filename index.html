@@ -649,5 +649,146 @@ document.getElementById("auth-login").onclick = async () => {
   <h2>About NOVA RUSH</h2>
   <p>NOVA RUSH is a free, space-themed rocket crash game demo. Explore the rocket launch experience and enjoy a demo game with no real-money betting or deposits.</p>
 </section>
+ 
+<script>
+(() => {
+  const arena = document.querySelector('.arena');
+  if (!arena || arena.querySelector('#nova-starfield')) return;
+
+  const style = document.createElement('style');
+  style.textContent = `
+    .arena {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #nova-starfield {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .arena > :not(#nova-starfield) {
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes novaRocketFlight {
+      0%, 100% { translate: 0 0; }
+      25% { translate: -5px -9px; }
+      55% { translate: 7px -22px; }
+      78% { translate: -3px -12px; }
+    }
+
+    #rocket {
+      animation: novaRocketFlight 2.4s ease-in-out infinite !important;
+      will-change: translate;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #rocket { animation: none !important; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  const canvas = document.createElement('canvas');
+  canvas.id = 'nova-starfield';
+  canvas.setAttribute('aria-hidden', 'true');
+  arena.prepend(canvas);
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  let w = 0, h = 0, stars = [], comets = [];
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+
+  function resize() {
+    const rect = arena.getBoundingClientRect();
+    const dpr = Math.min(devicePixelRatio || 1, 1.5);
+    w = rect.width;
+    h = rect.height;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const count = Math.min(100, Math.floor(w * h / 1100));
+    stars = Array.from({ length: count }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 1.3 + .3,
+      speed: Math.random() * .45 + .12,
+      phase: Math.random() * Math.PI * 2,
+      color: Math.random() > .5 ? '#c9a0ff' : '#a5e7ff'
+    }));
+  }
+
+  function draw(time) {
+    ctx.clearRect(0, 0, w, h);
+
+    stars.forEach(s => {
+      s.y += s.speed;
+      if (s.y > h) {
+        s.y = 0;
+        s.x = Math.random() * w;
+      }
+
+      const glow = .35 + .65 * (0.5 + 0.5 * Math.sin(time * .002 + s.phase));
+      ctx.globalAlpha = glow;
+      ctx.fillStyle = s.color;
+      ctx.shadowBlur = s.r > 1.1 ? 8 : 0;
+      ctx.shadowColor = s.color;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
+
+    if (!reduced.matches && Math.random() < .012 && comets.length < 2) {
+      comets.push({
+        x: Math.random() * w,
+        y: 0,
+        vx: 1.8 + Math.random() * 1.5,
+        vy: 2.5 + Math.random() * 2,
+        life: 1
+      });
+    }
+
+    comets = comets.filter(c => c.life > 0);
+    comets.forEach(c => {
+      const tailX = c.x - c.vx * 7;
+      const tailY = c.y - c.vy * 7;
+      const grad = ctx.createLinearGradient(tailX, tailY, c.x, c.y);
+      grad.addColorStop(0, 'rgba(155,92,255,0)');
+      grad.addColorStop(1, 'rgba(190,220,255,' + c.life + ')');
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(c.x, c.y);
+      ctx.stroke();
+
+      c.x += c.vx;
+      c.y += c.vy;
+      c.life -= .012;
+    });
+
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
+
+    if (!reduced.matches) requestAnimationFrame(draw);
+  }
+
+  resize();
+  addEventListener('resize', resize);
+  if (!reduced.matches) requestAnimationFrame(draw);
+})();
+</script>
+
 </body>
 </html>
