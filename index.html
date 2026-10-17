@@ -1582,5 +1582,188 @@ document.getElementById("auth-login").onclick = async () => {
 </body>
 </html>
 
+<script>
+(() => {
+  const menu = document.querySelector('#nova-menu-overlay');
+  if (!menu || document.getElementById('nova-levels-style')) return;
+
+  const XP_KEY = 'nova-rush-total-xp';
+  const ACH_KEY = 'nova-rush-achievements-v1';
+
+  const achievements = [
+    { id: 'first', icon: '🚀', name: 'First Flight', desc: 'დაასრულე პირველი რაუნდი', xp: 25 },
+    { id: 'pilot10', icon: '🧑‍🚀', name: 'Space Pilot', desc: 'ითამაშე 10 რაუნდი', xp: 50 },
+    { id: 'cashout5', icon: '💎', name: 'Smart Pilot', desc: 'მიიღე 5 წარმატებული Cash Out', xp: 75 },
+    { id: 'orbit', icon: '🌌', name: 'Into Orbit', desc: 'მიაღწიე 2.00x ან მეტს', xp: 50 },
+    { id: 'veteran', icon: '👑', name: 'Veteran', desc: 'ითამაშე 50 რაუნდი', xp: 150 }
+  ];
+
+  const style = document.createElement('style');
+  style.id = 'nova-levels-style';
+  style.textContent = `
+    #nova-levels { color:#f3edff; padding:16px 0; }
+    #nova-levels h2 { color:#d9b8ff; margin:8px 0; }
+    #nova-levels .lv-card {
+      background:linear-gradient(135deg,#211544,#101a36);
+      border:1px solid #57418e; border-radius:15px;
+      padding:16px; margin:12px 0;
+    }
+    #nova-levels .lv-big { font-size:30px; font-weight:800; color:#bda0ff; }
+    #nova-levels .lv-muted { color:#b9b4d5; font-size:12px; }
+    #nova-levels .lv-bar {
+      height:9px; background:#30264d; border-radius:9px;
+      overflow:hidden; margin:12px 0;
+    }
+    #nova-levels .lv-fill {
+      height:100%; width:0;
+      background:linear-gradient(90deg,#914cff,#39dfff);
+      transition:width .25s;
+    }
+    #nova-levels .lv-ach {
+      border:1px solid #39345f; background:#101328;
+      border-radius:13px; padding:13px; margin:9px 0;
+      display:flex; gap:11px; align-items:center;
+    }
+    #nova-levels .lv-icon { font-size:27px; }
+    #nova-levels .lv-ach strong { color:#f0e7ff; }
+    #nova-levels .lv-ach small { display:block; color:#aaa6ca; margin-top:4px; }
+    #nova-levels .lv-status { margin-left:auto; font-size:12px; color:#8eeec9; }
+    #nova-levels .lv-locked { opacity:.58; }
+  `;
+  document.head.appendChild(style);
+
+  let claimed = [];
+  try {
+    claimed = JSON.parse(localStorage.getItem(ACH_KEY) || '[]');
+  } catch (_) {}
+
+  if (!Array.isArray(claimed)) claimed = [];
+
+  const number = id =>
+    Number(document.getElementById(id)?.textContent) || 0;
+
+  function xp() {
+    return Math.max(0, Number(localStorage.getItem(XP_KEY)) || 0);
+  }
+
+  function levelInfo(points) {
+    const level = Math.floor(points / 200) + 1;
+    const currentBase = (level - 1) * 200;
+    const nextBase = level * 200;
+    return {
+      level,
+      current: points - currentBase,
+      needed: nextBase - currentBase,
+      percent: Math.min(100, ((points - currentBase) / 200) * 100)
+    };
+  }
+
+  function ensureScreen() {
+    let screen = menu.querySelector('[data-screen="achievements"]');
+    if (!screen) {
+      screen = document.createElement('div');
+      screen.className = 'nm-page';
+      screen.dataset.screen = 'achievements';
+      menu.appendChild(screen);
+    }
+
+    screen.innerHTML = `
+      <button class="nm-item nm-back" data-page="menu">← უკან მენიუში</button>
+      <div id="nova-levels">
+        <h2>⭐ LEVELS & ACHIEVEMENTS</h2>
+        <div class="lv-card">
+          <div class="lv-muted">YOUR PILOT LEVEL</div>
+          <div class="lv-big" id="nova-level-number">LEVEL 1</div>
+          <div id="nova-level-xp">0 / 200 XP</div>
+          <div class="lv-bar"><div class="lv-fill" id="nova-level-fill"></div></div>
+          <div class="lv-muted">ყოველ 200 XP-ზე შემდეგ დონეზე გადადიხარ.</div>
+        </div>
+        <h3>🏆 ACHIEVEMENTS</h3>
+        <div id="nova-ach-list"></div>
+        <div class="lv-muted">XP და მიღწევები ინახება ამ ბრაუზერში.</div>
+      </div>
+    `;
+    return screen;
+  }
+
+  const screen = ensureScreen();
+
+  function updateAchievements() {
+    const history = document.getElementById('history');
+    const hasTwoX = !!history && [...history.querySelectorAll('.pill')]
+      .some(el => parseFloat(el.textContent) >= 2);
+
+    const rounds = number('played');
+    const wins = number('wins');
+
+    const checks = {
+      first: rounds >= 1,
+      pilot10: rounds >= 10,
+      cashout5: wins >= 5,
+      orbit: hasTwoX,
+      veteran: rounds >= 50
+    };
+
+    achievements.forEach(a => {
+      if (checks[a.id] && !claimed.includes(a.id)) {
+        claimed.push(a.id);
+        try {
+          localStorage.setItem(XP_KEY, String(xp() + a.xp));
+        } catch (_) {}
+      }
+    });
+
+    try {
+      localStorage.setItem(ACH_KEY, JSON.stringify(claimed));
+    } catch (_) {}
+  }
+
+  function render() {
+    updateAchievements();
+
+    const points = xp();
+    const info = levelInfo(points);
+
+    const levelEl = screen.querySelector('#nova-level-number');
+    const xpEl = screen.querySelector('#nova-level-xp');
+    const fillEl = screen.querySelector('#nova-level-fill');
+    const listEl = screen.querySelector('#nova-ach-list');
+
+    if (!levelEl || !xpEl || !fillEl || !listEl) return;
+
+    levelEl.textContent = 'LEVEL ' + info.level;
+    xpEl.textContent = info.current + ' / ' + info.needed + ' XP';
+    fillEl.style.width = info.percent + '%';
+
+    listEl.innerHTML = achievements.map(a => {
+      const unlocked = claimed.includes(a.id);
+      return `
+        <div class="lv-ach ${unlocked ? '' : 'lv-locked'}">
+          <div class="lv-icon">${a.icon}</div>
+          <div>
+            <strong>${a.name}</strong>
+            <small>${a.desc}</small>
+            <small>ჯილდო: ${a.xp} XP</small>
+          </div>
+          <div class="lv-status">${unlocked ? '✓ UNLOCKED' : '🔒 LOCKED'}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  const observer = new MutationObserver(render);
+  ['played', 'wins', 'history'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el, {
+      childList: true,
+      characterData: true,
+      subtree: true
+    });
+  });
+
+  render();
+})();
+</script>
+
 </body>
 </html>
