@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOVA RUSH</title>
+<style>
+body{margin:0;background:#080d20;color:white;font-family:Arial;text-align:center}
+main{max-width:460px;margin:auto;padding:20px}
+h1{color:#62eaff;letter-spacing:5px}
+.box{background:#14203b;border-radius:18px;padding:20px;margin:16px 0}
+#balance{color:#70ffbd;font-size:26px}
+#arena{height:230px;background:radial-gradient(ellipse at bottom,#234c7c,#080d20 70%);border-radius:14px;position:relative;overflow:hidden}
+#mult{font-size:44px;padding-top:22px;font-weight:bold}
+#rocket{position:absolute;bottom:20px;left:20%;font-size:44px;transition:all .1s}
+input,button{width:100%;padding:14px;margin-top:10px;border:0;border-radius:10px;font-size:16px;box-sizing:border-box}
+input{background:#080f20;color:white;border:1px solid #405174}
+button{background:#62eaff;color:#061321;font-weight:bold}
+#cash{background:#70ffbd}
+#status{padding:14px;color:#b4c8e9}
+#history{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.tag{background:#263b5c;padding:8px;border-radius:8px}
+small{color:#a5b8d8}
+</style>
+</head>
+<body>
+<main>
+<h1>NOVA RUSH 🚀</h1>
+<small>SPACE CRASH DEMO · VIRTUAL CREDITS ONLY</small>
+<div class="box">VIRTUAL BALANCE<br><b id="balance">1000</b> CR</div>
+<div class="box">
+<div id="arena"><div id="mult">1.00x</div><div id="rocket">🚀</div></div>
+<div id="status">Ready for launch</div>
+</div>
+<div class="box">
+<input id="bet" type="number" min="1" value="50" placeholder="Virtual bet">
+<button id="start">START ROUND</button>
+<button id="cash" disabled>CASH OUT</button>
+<button id="reset">RESET DEMO</button>
+</div>
+<div class="box">
+<h3>ROUND HISTORY</h3>
+<div id="history">No rounds yet</div>
+</div>
+<div class="box">
+<h3>FAIRNESS DEMO</h3>
+<small>Local random simulation only. This is not cryptographic proof of fairness.</small>
+<button id="verify">CHECK LAST ROUND</button>
+<div id="check"></div>
+</div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let balance=1000,playing=false,bet=0,mult=1,target=1,timer=null,history=[],last=null;
+function update(){ $("balance").textContent=balance.toFixed(0); }
+function draw(){ $("history").innerHTML=history.length?history.map(r=>'<span class="tag">'+r.toFixed(2)+'x</span>').join(''):'No rounds yet'; }
+function start(){
+ if(playing)return;
+ bet=Number($("bet").value);
+ if(!Number.isInteger(bet)||bet<1){$("status").textContent="Enter a whole number above zero.";return;}
+ if(bet>balance){$("status").textContent="Not enough demo credits.";return;}
+ balance-=bet;update();playing=true;mult=1;target=Math.max(1,Math.floor(1/(1-Math.random())*100)/100);
+ $("start").disabled=true;$("cash").disabled=false;$("status").textContent="Rocket launched!";
+ $("rocket").style.left="20%";$("rocket").style.bottom="20px";
+ let began=Date.now();
+ timer=setInterval(()=>{
+  mult=Math.exp((Date.now()-began)/1000*.22);
+  if(mult>=target){mult=target;finish(true);return;}
+  $("mult").textContent=mult.toFixed(2)+"x";
+  $("rocket").style.left=Math.min(80,20+(Date.now()-began)/1000*5)+"%";
+  $("rocket").style.bottom=Math.min(170,20+(Date.now()-began)/1000*12)+"px";
+ },50);
+}
+function finish(crash){
+ if(!playing)return;
+ playing=false;clearInterval(timer);$("start").disabled=false;$("cash").disabled=true;
+ $("mult").textContent=crash?"💥 "+mult.toFixed(2)+"x":mult.toFixed(2)+"x";
+ $("status").textContent=crash?"Round crashed!":"";
+ history.unshift(mult);history=history.slice(0,10);draw();
+ last={target:target,ended:mult,crash:crash};
+}
+function cashOut(){
+ if(!playing)return;
+ let payout=Math.floor(bet*mult*100)/100;balance+=payout;update();finish(false);
+ $("status").textContent="Cashed out: "+payout.toFixed(2)+" CR";
+}
+$("start").onclick=start;
+$("cash").onclick=cashOut;
+$("reset").onclick=()=>{
+ clearInterval(timer);playing=false;balance=1000;mult=1;history=[];last=null;update();draw();
+ $("mult").textContent="1.00x";$("start").disabled=false;$("cash").disabled=true;
+ $("status").textContent="Demo reset.";$("check").textContent="";
+};
+$("verify").onclick=()=>{$("check").textContent=last?"Last simulated crash: "+last.target.toFixed(2)+"x. Record check only; not independent proof.":"Play a round first.";};
+update();draw();
+</script>
+</body>
+</html>
