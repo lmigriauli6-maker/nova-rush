@@ -1067,5 +1067,273 @@ document.getElementById("auth-login").onclick = async () => {
 })();
 </script>
 
+<script>
+(() => {
+  if (document.getElementById('nova-menu-button')) return;
+
+  const app = document.querySelector('.app');
+  const garage = document.getElementById('nova-garage');
+  const account = document.getElementById('auth-panel');
+  const about = Array.from(document.querySelectorAll('section'))
+    .find(s => s.querySelector('h2')?.textContent.includes('About NOVA RUSH'));
+
+  if (!app) return;
+
+  const style = document.createElement('style');
+  style.textContent = `
+    #nova-menu-button {
+      position: fixed;
+      z-index: 10002;
+      top: 12px;
+      right: 12px;
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 25px;
+      background: linear-gradient(135deg,#713dff,#287bff);
+      box-shadow: 0 0 20px #713dff55;
+    }
+
+    #nova-menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: none;
+      background: #03040bf2;
+      color: #f5f0ff;
+      overflow-y: auto;
+      padding: 76px 16px 28px;
+    }
+
+    #nova-menu-overlay.open { display: block; }
+
+    #nova-menu-overlay .nm-wrap {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    #nova-menu-overlay .nm-title {
+      color: #d7b7ff;
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      margin-bottom: 5px;
+    }
+
+    #nova-menu-overlay .nm-sub {
+      color: #a5e7ff;
+      font-size: 11px;
+      letter-spacing: 2px;
+      margin-bottom: 22px;
+    }
+
+    #nova-menu-overlay .nm-item {
+      display: block;
+      width: 100%;
+      margin: 9px 0;
+      padding: 15px;
+      text-align: left;
+      color: #f4edff;
+      background: linear-gradient(120deg,#1c193b,#10172d);
+      border: 1px solid #42336f;
+      border-radius: 14px;
+      font-size: 15px;
+    }
+
+    #nova-menu-overlay .nm-item:active {
+      background: #332057;
+    }
+
+    #nova-menu-overlay .nm-page {
+      display: none;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    #nova-menu-overlay .nm-page.active { display: block; }
+
+    #nova-menu-overlay .nm-back {
+      margin-bottom: 18px;
+      background: #211a3b;
+      color: #d9b8ff;
+    }
+
+    #nova-menu-overlay .nm-card {
+      margin: 12px 0;
+      padding: 17px;
+      background: linear-gradient(145deg,#17132e,#090d20);
+      border: 1px solid #49356f;
+      border-radius: 16px;
+      line-height: 1.7;
+    }
+
+    #nova-menu-overlay h2 {
+      color: #d7b7ff;
+      font-size: 21px;
+    }
+
+    #nova-menu-overlay #nova-garage {
+      margin-top: 0;
+    }
+
+    #nova-menu-overlay #auth-panel {
+      width: 100%;
+      max-width: 100% !important;
+      margin: 0 !important;
+      box-sizing: border-box;
+      background: #111126 !important;
+      border: 1px solid #49356f;
+    }
+
+    #nova-menu-overlay #auth-panel input,
+    #nova-menu-overlay #auth-panel button {
+      max-width: 100%;
+    }
+
+    #nova-menu-overlay #auth-panel h2 {
+      color: #d7b7ff;
+    }
+
+    #nova-menu-overlay #auth-panel p {
+      overflow-wrap: anywhere;
+    }
+
+    body.nova-menu-open { overflow: hidden; }
+  `;
+  document.head.appendChild(style);
+
+  const button = document.createElement('button');
+  button.id = 'nova-menu-button';
+  button.type = 'button';
+  button.textContent = '☰';
+  button.setAttribute('aria-label', 'Open menu');
+
+  const overlay = document.createElement('div');
+  overlay.id = 'nova-menu-overlay';
+
+  overlay.innerHTML = `
+    <div class="nm-wrap" id="nm-home">
+      <div class="nm-title">NOVA RUSH</div>
+      <div class="nm-sub">YOUR SPACE. YOUR ROCKET.</div>
+      <button class="nm-item" data-page="home">🏠 HOME — თამაში</button>
+      <button class="nm-item" data-page="garage">🚀 ROCKET GARAGE</button>
+      <button class="nm-item" data-page="account">👤 ACCOUNT — შესვლა / რეგისტრაცია</button>
+      <button class="nm-item" data-page="missions">🎯 DAILY MISSIONS</button>
+      <button class="nm-item" data-page="achievements">🏆 LEVELS & ACHIEVEMENTS</button>
+      <button class="nm-item" data-page="stats">📊 STATISTICS</button>
+      <button class="nm-item" data-page="about">ℹ️ ABOUT NOVA RUSH</button>
+    </div>
+
+    <div class="nm-page" data-screen="garage">
+      <button class="nm-item nm-back" data-page="menu">← უკან მენიუში</button>
+      <div id="nm-garage-slot"></div>
+    </div>
+
+    <div class="nm-page" data-screen="account">
+      <button class="nm-item nm-back" data-page="menu">← უკან მენიუში</button>
+      <div id="nm-account-slot"></div>
+    </div>
+
+    <div class="nm-page" data-screen="about">
+      <button class="nm-item nm-back" data-page="menu">← უკან მენიუში</button>
+      <div id="nm-about-slot"></div>
+    </div>
+
+    <div class="nm-page" data-screen="missions">
+      <button class="nm-item nm-back" data-page="menu">← უკან მენიუში</button>
+      <div class="nm-card">
+        <h2>🎯 Daily Missions</h2>
+        <p>ყოველდღიური მისიები მალე დაემატება.</p>
+        <p>შემდეგ ეტაპზე დავამატებთ დავალებებსა და დემო XP-ს.</p>
+      </div>
+    </div>
+
+    <div class="nm-page" data-screen="achievements">
+      <button class="nm-item nm-back" data-page="menu">← უკან მენიუში</button>
+      <div class="nm-card">
+        <h2>🏆 Levels & Achievements</h2>
+        <p>მოთამაშის დონეები და მიღწევები შემდეგ ეტაპზე დაემატება.</p>
+      </div>
+    </div>
+
+    <div class="nm-page" data-screen="stats">
+      <button class="nm-item nm-back" data-page="menu">← უკან მენიუში</button>
+      <div class="nm-card">
+        <h2>📊 Statistics</h2>
+        <p>სრული სტატისტიკის პანელს შემდეგ ეტაპზე დავამატებთ.</p>
+        <p>ამჟამინდელი თამაშის სტატისტიკა მთავარ ეკრანზე შენარჩუნებულია.</p>
+      </div>
+    </div>
+  `;
+
+  document.body.append(button, overlay);
+
+  const menuHome = overlay.querySelector('#nm-home');
+
+  if (garage) {
+    overlay.querySelector('#nm-garage-slot').appendChild(garage);
+    garage.style.setProperty('display', 'block', 'important');
+  }
+
+  if (account) {
+    overlay.querySelector('#nm-account-slot').appendChild(account);
+  }
+
+  if (about) {
+    overlay.querySelector('#nm-about-slot').appendChild(about);
+    about.style.setProperty('display', 'block', 'important');
+  }
+
+  function closeMenu() {
+    overlay.classList.remove('open');
+    document.body.classList.remove('nova-menu-open');
+    button.textContent = '☰';
+  }
+
+  function showPage(page) {
+    if (page === 'home') {
+      closeMenu();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    menuHome.style.display = page === 'menu' ? 'block' : 'none';
+
+    overlay.querySelectorAll('[data-screen]').forEach(screen => {
+      screen.classList.toggle(
+        'active',
+        screen.dataset.screen === page
+      );
+    });
+
+    button.textContent = '✕';
+    overlay.classList.add('open');
+    document.body.classList.add('nova-menu-open');
+    overlay.scrollTop = 0;
+  }
+
+  button.addEventListener('click', () => {
+    if (overlay.classList.contains('open')) {
+      closeMenu();
+    } else {
+      showPage('menu');
+    }
+  });
+
+  overlay.addEventListener('click', event => {
+    const item = event.target.closest('[data-page]');
+    if (item) showPage(item.dataset.page);
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') closeMenu();
+  });
+})();
+</script>
+</body>
+</html>
+
 </body>
 </html>
