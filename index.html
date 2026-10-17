@@ -283,6 +283,58 @@ input:focus-visible {
   outline-offset: 3px;
 }
 
+/* NOVA RUSH — ROCKET FLIGHT EFFECT */
+
+#rocket {
+  transform-origin: center;
+  will-change: transform, filter;
+  filter:
+    drop-shadow(0 0 6px #a855f7)
+    drop-shadow(0 0 16px #7c3aed)
+    drop-shadow(0 0 28px #38bdf8);
+  animation: novaRocketIdle 1.4s ease-in-out infinite alternate;
+}
+
+#trail {
+  transform-origin: center;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #38bdf8 25%,
+    #8b5cf6 65%,
+    #d8b4fe
+  );
+  box-shadow:
+    0 0 10px #8b5cf6,
+    0 0 22px rgba(56, 189, 248, .7);
+  animation: novaTrailPulse .65s ease-in-out infinite alternate;
+}
+
+@keyframes novaRocketIdle {
+  from {
+    translate: 0 3px;
+    filter: drop-shadow(0 0 8px #a855f7);
+  }
+  to {
+    translate: 0 -5px;
+    filter:
+      drop-shadow(0 0 12px #a855f7)
+      drop-shadow(0 0 24px #38bdf8);
+  }
+}
+
+@keyframes novaTrailPulse {
+  from { opacity: .55; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #rocket, #trail {
+    animation: none;
+  }
+}
+
 </style>
 </head>
 <body>
