@@ -49,7 +49,201 @@ input:focus{border-color:#65eaff}
 .small{font-size:11px;line-height:1.6;color:#93a9cc}
 .full{width:100%;margin-top:10px}
 .footer{text-align:center;color:#7085a7;font-size:10px;line-height:1.7;padding:12px}
- <meta name="description" content="Play NOVA RUSH, a space rocket crash game demo with rocket animations, round history, and fairness testing. Free to play with no real money.">
+ <meta name="description" content="Play NOVA RUSH, a space rocket crash game demo with rocket animations, round history, and fairness testing. Free to play with no real money.
+ 
+/* NOVA RUSH — NEON SPACE REDESIGN */
+
+:root {
+  color-scheme: dark;
+  --nr-bg: #050611;
+  --nr-panel: #101126;
+  --nr-purple: #9b5cff;
+  --nr-blue: #36c8ff;
+  --nr-text: #f5f3ff;
+  --nr-muted: #a4a5c5;
+}
+
+html {
+  background: var(--nr-bg);
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at 50% 0%, #21104a 0%, transparent 48%),
+    linear-gradient(180deg, #080816, #04050c);
+  color: var(--nr-text);
+}
+
+.app {
+  width: 100%;
+  max-width: 520px;
+  margin-inline: auto;
+  padding: 16px;
+}
+
+.logo {
+  color: #d4b5ff;
+  text-shadow:
+    0 0 10px #9b5cff,
+    0 0 30px #6125df;
+  letter-spacing: 5px;
+}
+
+.sub {
+  color: var(--nr-blue);
+}
+
+.panel {
+  background: linear-gradient(
+    145deg,
+    rgba(28, 24, 61, .96),
+    rgba(9, 12, 30, .98)
+  );
+  border: 1px solid rgba(139, 92, 246, .35);
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .22);
+}
+
+.arena {
+  height: clamp(230px, 64vw, 310px);
+  border: 1px solid rgba(54, 200, 255, .45);
+  border-radius: 17px;
+  background:
+    radial-gradient(ellipse at 50% 110%, #30206d 0%, #101631 48%, #050610 100%);
+  box-shadow: inset 0 0 35px rgba(80, 50, 190, .2);
+}
+
+.mult {
+  color: #fff;
+  font-size: clamp(42px, 12vw, 58px);
+  text-shadow: 0 0 14px #8c5cff, 0 0 32px #376dff;
+  font-variant-numeric: tabular-nums;
+}
+
+.mult small {
+  color: var(--nr-blue);
+}
+
+#rocket {
+  filter:
+    drop-shadow(0 0 8px #45d9ff)
+    drop-shadow(0 0 20px #7b42ff);
+  animation: rocketFloat .7s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+#trail {
+  background: linear-gradient(90deg, #9b5cff, #36c8ff);
+  box-shadow: 0 0 16px #713dff;
+  animation: trailGlow .8s ease-in-out infinite alternate;
+}
+
+@keyframes rocketFloat {
+  from { transform: rotate(-35deg) translateY(0); }
+  to   { transform: rotate(-31deg) translateY(-5px); }
+}
+
+@keyframes trailGlow {
+  from { opacity: .55; }
+  to   { opacity: 1; }
+}
+
+.balance {
+  color: #bca0ff;
+  text-shadow: 0 0 14px rgba(155, 92, 255, .35);
+}
+
+button {
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 12px;
+  transition: transform .15s ease, filter .15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:active:not(:disabled) {
+  transform: scale(.97);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  filter: saturate(.45);
+}
+
+.primary {
+  color: #fff;
+  background: linear-gradient(110deg, #713dff, #388dff);
+  box-shadow: 0 0 20px rgba(113, 61, 255, .24);
+}
+
+.cash {
+  color: #fff;
+  background: linear-gradient(110deg, #087eac, #3163ee);
+  box-shadow: 0 0 18px rgba(54, 200, 255, .18);
+}
+
+.secondary,
+.quick button {
+  color: #e9e1ff;
+  background: linear-gradient(135deg, #252044, #151b38);
+  border-color: rgba(139, 92, 246, .25);
+}
+
+input {
+  color: #fff;
+  background: #080a19;
+  border: 1px solid #34305e;
+  border-radius: 12px;
+}
+
+input:focus {
+  border-color: var(--nr-blue);
+  box-shadow: 0 0 0 3px rgba(54, 200, 255, .1);
+}
+
+.label,
+.muted,
+.small {
+  color: var(--nr-muted);
+}
+
+.pill {
+  border: 1px solid rgba(139, 92, 246, .25);
+  background: linear-gradient(135deg, #292044, #151b37);
+  border-radius: 10px;
+  padding: 9px 12px;
+}
+
+.stat {
+  background: #090b1b;
+  border: 1px solid rgba(139, 92, 246, .18);
+  border-radius: 13px;
+}
+
+.status {
+  line-height: 1.6;
+}
+
+.footer {
+  color: #8586aa;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+}
+
+@media (max-width: 380px) {
+  .app { padding: 11px; }
+  .panel { padding: 13px; }
+  .quick { gap: 5px; }
+  .quick button { padding-inline: 4px; font-size: 12px; }
+  .logo { font-size: 28px; letter-spacing: 3px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #rocket, #trail { animation: none; }
+  html { scroll-behavior: auto; }
+  button { transition: none; }
+}
+
 </style>
 </head>
 <body>
