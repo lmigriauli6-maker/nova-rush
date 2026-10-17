@@ -4,72 +4,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#070b18">
+<meta name="theme-color" content="#080d1b">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="NOVA RUSH">
 <title>NOVA RUSH PRO</title>
 <style>
 *{box-sizing:border-box}
-:root{--cyan:#63eaff;--green:#6dffc0;--bg:#070b18;--panel:#111a30}
-body{margin:0;background:var(--bg);color:white;font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,#172950 0%,transparent 55%);z-index:-1}
-.app{max-width:520px;margin:auto;padding:15px 15px 30px}
-header{text-align:center;padding:12px 0 20px}
-.logo{font-size:32px;font-weight:950;letter-spacing:5px;color:var(--cyan);text-shadow:0 0 24px #27c9ff55}
-.tagline{font-size:10px;letter-spacing:3px;color:#8ea7ce;margin-top:6px}
-.panel{background:linear-gradient(145deg,#131e37,#0c1427);border:1px solid #293958;border-radius:19px;padding:16px;margin-bottom:13px;box-shadow:0 8px 24px #0002}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.muted{font-size:11px;color:#91a6ca;letter-spacing:1px}
-.balance{font-size:27px;font-weight:900;color:var(--green);margin-top:5px}
+body{margin:0;background:#080d1b;color:#eef7ff;font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif}
+.app{max-width:520px;margin:auto;padding:16px}
+header{text-align:center;padding:15px 0 22px}
+.logo{font-size:32px;font-weight:950;letter-spacing:5px;color:#65eaff;text-shadow:0 0 25px #1ba9ff}
+.sub{font-size:10px;letter-spacing:3px;color:#8ba6cb;margin-top:7px}
+.panel{background:linear-gradient(145deg,#14213c,#0d1529);border:1px solid #293d60;border-radius:18px;padding:16px;margin-bottom:13px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.muted,.label{font-size:11px;color:#93a9cc;letter-spacing:1px}
+.balance{font-size:28px;font-weight:900;color:#70ffc3;margin-top:5px}
 button,input{font:inherit}
-button{border:0;border-radius:12px;padding:13px;font-weight:850;cursor:pointer;transition:transform .12s,filter .12s}
-button:active{transform:scale(.97)}
-button:disabled{opacity:.4;cursor:not-allowed}
-.reset{background:#243452;color:#d6e4ff;padding:10px 12px;font-size:11px}
-.arena{height:265px;position:relative;overflow:hidden;border:1px solid #26395c;border-radius:15px;background:radial-gradient(ellipse at 50% 110%,#214b79,#101a34 48%,#070d1d 80%)}
-.star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;box-shadow:0 0 5px #b3edff;animation:twinkle 2s infinite alternate}
-@keyframes twinkle{from{opacity:.25}to{opacity:1}}
-.mult{position:absolute;top:23px;width:100%;text-align:center;font-size:49px;font-weight:950;letter-spacing:-1px;text-shadow:0 0 25px #61dcff66}
-.mult small{font-size:16px;color:var(--cyan)}
-#rocket{position:absolute;left:20%;bottom:25px;font-size:47px;transform:rotate(-35deg);filter:drop-shadow(0 0 12px #62dcff);z-index:2}
-#trail{position:absolute;left:16%;bottom:29px;width:60px;height:5px;border-radius:50%;background:#5ceaff;filter:blur(7px);transform:rotate(-35deg);opacity:.5}
-.status{text-align:center;color:#a9bfdf;font-size:12px;min-height:19px;margin-top:12px}
-.status.good{color:var(--green)}
-.status.bad{color:#ff819f}
-.label{display:block;color:#9eb1d2;font-size:11px;letter-spacing:1px;margin-bottom:7px}
-input{width:100%;background:#080f20;border:1px solid #354968;border-radius:11px;padding:13px;color:white;font-size:18px;outline:none}
-input:focus{border-color:var(--cyan)}
-.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:9px 0 13px}
-.quick button{background:#263652;color:#dceaff;padding:10px 4px;font-size:12px}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.primary{background:linear-gradient(100deg,#60dfff,#79f4f0);color:#061323}
-.cash{background:linear-gradient(100deg,#68ffc0,#9affbd);color:#062318}
-.full{width:100%;margin-top:9px}
-.section-title{font-size:14px;font-weight:850;letter-spacing:1px;margin:0 0 14px}
+button{border:0;border-radius:11px;padding:13px 10px;font-weight:850;cursor:pointer}
+button:disabled{opacity:.4}
+input{width:100%;padding:13px;background:#080f20;border:1px solid #354968;border-radius:10px;color:white;font-size:17px;outline:none}
+input:focus{border-color:#65eaff}
+.label{display:block;margin:12px 0 7px}
+.arena{height:260px;position:relative;overflow:hidden;border-radius:14px;border:1px solid #29416a;background:radial-gradient(ellipse at 50% 110%,#235b8c,#111c38 55%,#070b17)}
+.star{position:absolute;width:2px;height:2px;background:white;border-radius:50%;animation:twinkle 1.7s infinite alternate}
+@keyframes twinkle{to{opacity:.2}}
+.mult{position:absolute;top:22px;width:100%;text-align:center;font-size:48px;font-weight:950;color:white;text-shadow:0 0 22px #59dfff}
+.mult small{font-size:17px;color:#65eaff}
+#rocket{position:absolute;left:20%;bottom:25px;font-size:43px;filter:drop-shadow(0 0 12px #65eaff);transform:rotate(-35deg)}
+#trail{position:absolute;left:15%;bottom:30px;width:65px;height:5px;background:#65eaff;filter:blur(7px);transform:rotate(-35deg)}
+.status{text-align:center;font-size:12px;color:#a9bfdf;min-height:32px;padding-top:12px}
+.good{color:#70ffc3}.bad{color:#ff8da9}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0}
+.quick button,.secondary{background:#263958;color:#e2eeff}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.primary{background:linear-gradient(100deg,#60dfff,#86f4ee);color:#061323}
+.cash{background:linear-gradient(100deg,#68ffc0,#a0ffbc);color:#062318}
 .history{display:flex;flex-wrap:wrap;gap:7px}
-.pill{border-radius:8px;padding:8px 10px;background:#263651;font-size:12px;font-weight:800}
+.pill{padding:8px 10px;border-radius:8px;background:#263958;font-size:12px;font-weight:800}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.stat{background:#0a1224;border-radius:11px;padding:12px 7px;text-align:center}
+.stat{background:#091225;border-radius:10px;text-align:center;padding:12px 4px}
 .stat strong{display:block;font-size:19px;margin-bottom:5px}
-.stat span{font-size:9px;color:#8fa5ca;letter-spacing:.5px}
-.small{font-size:11px;color:#8fa5ca;line-height:1.65}
-.toggle{display:flex;align-items:center;gap:8px;background:#263652;color:white;padding:10px 12px;font-size:11px}
-.footer{text-align:center;color:#64789b;font-size:10px;line-height:1.7;padding:8px}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-.crash{animation:shake .3s}
+.stat span{font-size:9px;color:#93a9cc}
+.small{font-size:11px;line-height:1.6;color:#93a9cc}
+.full{width:100%;margin-top:10px}
+.footer{text-align:center;color:#7085a7;font-size:10px;line-height:1.7;padding:12px}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
 <div class="logo">NOVA RUSH</div>
-<div class="tagline">SPACE CRASH EXPERIENCE</div>
+<div class="sub">SPACE CRASH EXPERIENCE</div>
 </header>
 
 <div class="panel row">
-<div><div class="muted">DEMO BALANCE</div><div class="balance"><span id="balance">1000</span> <span style="font-size:12px">CR</span></div></div>
-<button class="reset" id="reset">↻ RESET</button>
+<div><div class="muted">DEMO BALANCE</div><div class="balance"><span id="balance">1000</span> CR</div></div>
+<button class="secondary" id="reset">↻ RESET</button>
 </div>
 
 <div class="panel">
@@ -83,18 +73,20 @@ input:focus{border-color:var(--cyan)}
 </div>
 
 <div class="panel">
-<div class="row" style="margin-bottom:12px">
-<div class="section-title" style="margin:0">YOUR BET</div>
-<button class="toggle" id="sound">♫ SOUND OFF</button>
-</div>
-<label class="label" for="bet">VIRTUAL CREDITS (CR)</label>
-<input id="bet" type="number" min="1" max="1000000" step="1" value="50">
+<div class="row"><strong>YOUR BET</strong><span class="muted">VIRTUAL CREDITS</span></div>
+<label class="label" for="bet">BET AMOUNT (CR)</label>
+<input id="bet" type="number" min="1" step="1" value="50">
 <div class="quick">
 <button data-bet="10">10 CR</button>
 <button data-bet="50">50 CR</button>
 <button data-bet="100">100 CR</button>
-<button id="half">½ HALF</button>
+<button id="half">½ BALANCE</button>
 </div>
+
+<label class="label" for="auto">AUTO CASH OUT MULTIPLIER (e.g. 2.00)</label>
+<input id="auto" type="number" min="0" step="0.01" placeholder="0 = manual cash out">
+<div class="small">Set 2.00 to collect automatically at 2x if the rocket has not crashed first. Leave at 0 for manual cash out.</div>
+
 <div class="actions">
 <button class="primary" id="start">🚀 START</button>
 <button class="cash" id="cash" disabled>CASH OUT</button>
@@ -102,13 +94,13 @@ input:focus{border-color:var(--cyan)}
 </div>
 
 <div class="panel">
-<div class="section-title">ROUND HISTORY</div>
-<div class="history" id="history"><span class="small">Play a round to begin.</span></div>
+<strong>ROUND HISTORY</strong>
+<div class="history" id="history" style="margin-top:13px"><span class="small">Play a round to begin.</span></div>
 </div>
 
 <div class="panel">
-<div class="section-title">YOUR STATISTICS</div>
-<div class="stats">
+<strong>YOUR STATISTICS</strong>
+<div class="stats" style="margin-top:13px">
 <div class="stat"><strong id="played">0</strong><span>ROUNDS</span></div>
 <div class="stat"><strong id="wins">0</strong><span>CASH OUTS</span></div>
 <div class="stat"><strong id="net">0</strong><span>NET CR</span></div>
@@ -116,143 +108,199 @@ input:focus{border-color:var(--cyan)}
 </div>
 
 <div class="panel">
-<div class="section-title">FAIRNESS DEMO</div>
-<div class="small">This is a local random simulation. The check below verifies the saved round record only. It is not cryptographic proof of fairness.</div>
-<button class="reset full" id="verify">CHECK LAST ROUND</button>
+<strong>FAIRNESS DEMO</strong>
+<p class="small">This is a local random simulation. The record check is not cryptographic proof of fairness.</p>
+<button class="secondary full" id="verify">CHECK LAST ROUND</button>
 <div class="small" id="check" style="margin-top:10px"></div>
 </div>
-<div class="footer">NOVA RUSH PRO · VIRTUAL CREDITS ONLY<br>NO REAL-MONEY WAGERING · DEMO VERSION</div>
+<div class="footer">NOVA RUSH PRO<br>VIRTUAL CREDITS ONLY · NO REAL-MONEY WAGERING</div>
 </div>
 
 <script>
 const $=id=>document.getElementById(id);
-const STORE="novaRushPro_v1";
-let balance=1000,playing=false,bet=50,mult=1,target=1,timer=null,started=0;
-let history=[],last=null,rounds=0,wins=0,net=0,soundOn=false,audio=null;
+const STORE="novaRushPro_v2";
+let balance=1000,playing=false,bet=50,mult=1,target=1;
+let timer=null,started=0,autoCashOut=0;
+let history=[],last=null,rounds=0,wins=0,net=0;
 
 function load(){
  try{
   const d=JSON.parse(localStorage.getItem(STORE)||"null");
-  if(d){balance=Number(d.balance)||1000;history=Array.isArray(d.history)?d.history.slice(0,12):[];rounds=Number(d.rounds)||0;wins=Number(d.wins)||0;net=Number(d.net)||0;last=d.last||null;}
+  if(d){
+   balance=Number.isFinite(d.balance)?d.balance:1000;
+   history=Array.isArray(d.history)?d.history.slice(0,12):[];
+   rounds=Number(d.rounds)||0;
+   wins=Number(d.wins)||0;
+   net=Number(d.net)||0;
+   last=d.last||null;
+  }
  }catch(e){}
 }
 function save(){
- try{localStorage.setItem(STORE,JSON.stringify({balance,history,rounds,wins,net,last}));}catch(e){}
+ try{
+  localStorage.setItem(STORE,JSON.stringify({balance,history,rounds,wins,net,last}));
+ }catch(e){}
 }
-function showBalance(){$("balance").textContent=Math.floor(balance).toLocaleString("en-US");}
-function showMult(v){$("mult").innerHTML=v.toFixed(2)+'<small>x</small>';}
-function setStatus(t,type=""){$("status").textContent=t;$("status").className="status "+type;}
-function drawHistory(){
- $("history").innerHTML=history.length?history.map(r=>'<span class="pill" style="color:'+(r.cashed?'#72ffc0':'#ff92aa')+'">'+r.value.toFixed(2)+'x</span>').join(""):'<span class="small">Play a round to begin.</span>';
+function showMult(v){$("mult").innerHTML=v.toFixed(2)+"<small>x</small>";}
+function status(t,c=""){$("status").textContent=t;$("status").className="status "+c;}
+function update(){
+ $("balance").textContent=balance.toLocaleString("en-US",{maximumFractionDigits:2});
+ $("played").textContent=rounds;
+ $("wins").textContent=wins;
+ $("net").textContent=(net>0?"+":"")+net.toFixed(2);
+ $("net").style.color=net>=0?"#70ffc3":"#ff8da9";
+ $("history").innerHTML=history.length?history.map(r=>'<span class="pill" style="color:'+(r.cashed?'#70ffc3':'#ff8da9')+'">'+r.value.toFixed(2)+'x</span>').join(""):'<span class="small">Play a round to begin.</span>';
+ save();
 }
-function drawStats(){
- $("played").textContent=rounds;$("wins").textContent=wins;
- $("net").textContent=(net>0?"+":"")+net.toFixed(0);
- $("net").style.color=net>=0?"#6dffc0":"#ff92aa";
-}
-function update(){showBalance();drawHistory();drawStats();save();}
-function makeStars(){
- for(let i=0;i<48;i++){
-  const s=document.createElement("i");s.className="star";
-  s.style.left=Math.random()*100+"%";s.style.top=Math.random()*100+"%";
+function stars(){
+ for(let i=0;i<50;i++){
+  let s=document.createElement("i");
+  s.className="star";
+  s.style.left=Math.random()*100+"%";
+  s.style.top=Math.random()*100+"%";
   s.style.animationDelay=Math.random()*2+"s";
   $("stars").appendChild(s);
  }
 }
-function beep(freq=500,duration=.08){
- if(!soundOn)return;
- try{
-  audio=audio||new (window.AudioContext||window.webkitAudioContext)();
-  if(audio.state==="suspended")audio.resume();
-  const o=audio.createOscillator(),g=audio.createGain();
-  o.frequency.value=freq;o.type="sine";g.gain.value=.045;
-  o.connect(g);g.connect(audio.destination);o.start();
-  g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);
-  o.stop(audio.currentTime+duration);
- }catch(e){}
+function resetRocket(){
+ $("rocket").style.left="20%";
+ $("rocket").style.bottom="25px";
+ $("trail").style.left="15%";
+ $("trail").style.bottom="30px";
+ $("arena").style.filter="";
 }
 function crashPoint(){
- // Demo-only random result; not an externally verifiable fair algorithm.
  const r=Math.random();
- return Math.max(1,Math.floor((1/(1-r))*100)/100);
-}
-function resetRocket(){
- $("rocket").style.left="20%";$("rocket").style.bottom="25px";
- $("trail").style.left="16%";$("trail").style.bottom="29px";
- $("arena").classList.remove("crash");
+ return Math.max(1.01,Math.floor((1/(1-r))*100)/100);
 }
 function startRound(){
  if(playing)return;
  const amount=Number($("bet").value);
- if(!Number.isSafeInteger(amount)||amount<1){setStatus("Enter a whole number above zero.","bad");return;}
- if(amount>balance){setStatus("Not enough virtual credits.","bad");return;}
- bet=amount;balance-=bet;net-=bet;playing=true;mult=1;target=crashPoint();started=Date.now();
- $("start").disabled=true;$("cash").disabled=false;$("check").textContent="";
- showMult(1);resetRocket();setStatus("Rocket launched — cash out before the crash.");
- update();beep(420);
+ const auto=Number($("auto").value)||0;
+ if(!Number.isSafeInteger(amount)||amount<1){
+  status("Enter a whole-number bet above zero.","bad");return;
+ }
+ if(amount>balance){
+  status("Not enough virtual credits.","bad");return;
+ }
+ if(auto!==0&&(!Number.isFinite(auto)||auto<1.01||auto>1000000)){
+  status("Auto Cash Out must be 0 or at least 1.01.","bad");return;
+ }
+ bet=amount;
+ autoCashOut=auto;
+ balance-=bet;
+ net-=bet;
+ playing=true;
+ mult=1;
+ target=crashPoint();
+ started=Date.now();
+ $("start").disabled=true;
+ $("cash").disabled=false;
+ $("check").textContent="";
+ showMult(1);
+ resetRocket();
+ status(autoCashOut>0?"Rocket launched · Auto Cash Out "+autoCashOut.toFixed(2)+"x":"Rocket launched · Cash out before the crash");
+ update();
+
  timer=setInterval(()=>{
   if(!playing)return;
   const elapsed=(Date.now()-started)/1000;
   mult=Math.exp(elapsed*.23);
-  if(mult>=target){mult=target;showMult(mult);finish(true);return;}
+  if(mult>=target){
+   mult=target;
+   showMult(mult);
+   finishCrash();
+   return;
+  }
   showMult(mult);
+  if(autoCashOut>0&&mult>=autoCashOut){
+   cashOut(true);
+   return;
+  }
   const x=Math.min(79,20+elapsed*6);
   const y=Math.min(176,25+elapsed*14);
-  $("rocket").style.left=x+"%";$("rocket").style.bottom=y+"px";
-  $("trail").style.left=(x-4)+"%";$("trail").style.bottom=(y+4)+"px";
-  if(Math.floor(mult*10)!==Math.floor((mult-.02)*10))beep(620,.025);
+  $("rocket").style.left=x+"%";
+  $("rocket").style.bottom=y+"px";
+  $("trail").style.left=(x-4)+"%";
+  $("trail").style.bottom=(y+4)+"px";
  },50);
 }
-function finish(crashed){
+function stopRound(){
+ playing=false;
+ clearInterval(timer);
+ $("start").disabled=false;
+ $("cash").disabled=true;
+}
+function finishCrash(){
  if(!playing)return;
- playing=false;clearInterval(timer);$("start").disabled=false;$("cash").disabled=true;
- const record={value:mult,crashed,bet,crashAt:target,time:new Date().toISOString()};
- history.unshift(record);history=history.slice(0,12);
- last=record;rounds++;
- if(crashed){
-  $("mult").textContent="💥 "+mult.toFixed(2)+"x";
-  $("arena").classList.add("crash");setStatus("Rocket crashed. Round over.","bad");beep(130,.25);
- }else{
-  wins++;setStatus("CASH OUT successful!","good");beep(850,.13);
- }
+ stopRound();
+ const record={value:mult,crashed:true,cashed:false,bet,crashAt:target,time:new Date().toISOString()};
+ history.unshift(record);
+ history=history.slice(0,12);
+ last=record;
+ rounds++;
+ $("mult").textContent="💥 "+mult.toFixed(2)+"x";
+ $("arena").style.filter="saturate(.6)";
+ status("Rocket crashed · Round over","bad");
  update();
 }
-function cashOut(){
+function cashOut(automatic=false){
  if(!playing)return;
- const payout=Math.floor(bet*mult*100)/100;
- balance+=payout;net+=payout;
- const cashedAt=mult;
- playing=false;clearInterval(timer);
- $("start").disabled=false;$("cash").disabled=true;
- history.unshift({value:cashedAt,crashed:false,cashed:true,bet,crashAt:target,time:new Date().toISOString()});
- history=history.slice(0,12);last=history[0];rounds++;wins++;
- $("mult").textContent=cashedAt.toFixed(2)+"x";
- setStatus("Collected "+payout.toFixed(2)+" CR · "+cashedAt.toFixed(2)+"x","good");
- update();beep(900,.15);
+ if(mult>=target){
+  mult=target;
+  showMult(mult);
+  finishCrash();
+  return;
+ }
+ const collected=Math.floor(bet*mult*100)/100;
+ stopRound();
+ balance+=collected;
+ net+=collected;
+ const record={value:mult,crashed:false,cashed:true,bet,crashAt:target,time:new Date().toISOString()};
+ history.unshift(record);
+ history=history.slice(0,12);
+ last=record;
+ rounds++;
+ wins++;
+ showMult(mult);
+ status((automatic?"AUTO CASH OUT":"CASH OUT")+" · Collected "+collected.toFixed(2)+" CR · "+mult.toFixed(2)+"x","good");
+ update();
 }
 function resetDemo(){
- clearInterval(timer);playing=false;balance=1000;history=[];last=null;rounds=0;wins=0;net=0;mult=1;
- $("start").disabled=false;$("cash").disabled=true;$("bet").value=50;
- showMult(1);resetRocket();setStatus("Demo balance reset.");$("check").textContent="";
+ clearInterval(timer);
+ playing=false;
+ balance=1000;history=[];last=null;rounds=0;wins=0;net=0;
+ mult=1;target=1;autoCashOut=0;
+ $("bet").value=50;
+ $("auto").value="";
+ $("start").disabled=false;
+ $("cash").disabled=true;
+ $("check").textContent="";
+ showMult(1);
+ resetRocket();
+ status("Demo balance reset");
  update();
 }
 $("start").addEventListener("click",startRound);
-$("cash").addEventListener("click",cashOut);
+$("cash").addEventListener("click",()=>cashOut(false));
 $("reset").addEventListener("click",()=>{
- if(confirm("Reset all demo progress and restore 1000 credits?"))resetDemo();
+ if(confirm("Reset demo balance and all statistics?"))resetDemo();
 });
-document.querySelectorAll("[data-bet]").forEach(b=>b.addEventListener("click",()=>{$("bet").value=b.dataset.bet;}));
-$("half").addEventListener("click",()=>{$("bet").value=Math.max(1,Math.floor(balance/2));});
-$("sound").addEventListener("click",()=>{
- soundOn=!soundOn;$("sound").textContent=soundOn?"♫ SOUND ON":"♫ SOUND OFF";
- if(soundOn)beep(700);
+document.querySelectorAll("[data-bet]").forEach(b=>{
+ b.addEventListener("click",()=>{$("bet").value=b.dataset.bet;});
+});
+$("half").addEventListener("click",()=>{
+ $("bet").value=Math.max(1,Math.floor(balance/2));
 });
 $("verify").addEventListener("click",()=>{
  if(!last){$("check").textContent="Play a round first.";return;}
  const ok=Number.isFinite(last.value)&&Number.isFinite(last.crashAt)&&last.value<=last.crashAt;
- $("check").textContent=(ok?"Record fields look consistent. ":"Record check failed. ")+"Round result: "+last.value.toFixed(2)+"x. This is not independent cryptographic proof.";
+ $("check").textContent=(ok?"Saved record looks consistent. ":"Record check failed. ")+"This is not independent cryptographic proof.";
 });
-load();makeStars();update();showMult(1);
+load();
+stars();
+update();
+showMult(1);
 </script>
 </body>
 </html>
