@@ -3000,5 +3000,368 @@ document.getElementById("auth-login").onclick = async () => {
 })();
 </script>
 
+<style id="nova-menu-premium">
+  #nova-menu-overlay {
+    padding: 16px !important;
+    background: rgba(5, 6, 15, .97) !important;
+    backdrop-filter: blur(16px);
+  }
+
+  #nova-menu-overlay .nm-card,
+  #nova-menu-overlay .daily-xp,
+  #nova-menu-overlay .daily-mission,
+  #nova-menu-overlay .lv-card,
+  #nova-menu-overlay .lv-ach,
+  #nova-menu-overlay .st-card {
+    padding: 12px !important;
+    border-radius: 10px !important;
+    border: 1px solid rgba(153, 116, 210, .23) !important;
+    box-shadow: none !important;
+  }
+
+  #nova-menu-overlay .nm-item {
+    min-height: 42px !important;
+    padding: 10px 12px !important;
+    border-radius: 9px !important;
+    font-size: 13px !important;
+    background: #111321 !important;
+    border: 1px solid #29263e !important;
+  }
+
+  #nova-menu-overlay h2 {
+    margin: 12px 0 !important;
+    font-size: 19px !important;
+    letter-spacing: .5px;
+  }
+
+  #nova-menu-overlay h3 {
+    font-size: 14px !important;
+  }
+
+  #nova-menu-overlay button {
+    min-height: 38px;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+  }
+
+  .nr-language-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 0 14px;
+    padding: 10px 12px;
+    background: #10111e;
+    border: 1px solid #302744;
+    border-radius: 10px;
+  }
+
+  .nr-language-label {
+    color: #b9b4cb;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  #nova-language-select {
+    width: auto;
+    max-width: 165px;
+    min-height: 38px;
+    padding: 8px 10px;
+    color: #f7f4ff;
+    background: #19172a;
+    border: 1px solid #5c4381;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  @media(max-width:600px) {
+    #nova-menu-overlay {
+      padding: 11px !important;
+    }
+
+    #nova-menu-overlay .nm-card,
+    #nova-menu-overlay .daily-xp,
+    #nova-menu-overlay .daily-mission,
+    #nova-menu-overlay .lv-card,
+    #nova-menu-overlay .lv-ach,
+    #nova-menu-overlay .st-card {
+      padding: 10px !important;
+    }
+  }
+</style>
+
+<script>
+(() => {
+  const languages = {
+    en: {
+      label: "Language",
+      crash: "CRASH GAME",
+      rockets: "ROCKETS",
+      missions: "MISSIONS",
+      levels: "LEVELS",
+      stats: "STATS",
+      account: "ACCOUNT",
+      garage: "ROCKET GARAGE",
+      achievements: "ACHIEVEMENTS",
+      statistics: "STATISTICS",
+      daily: "DAILY MISSIONS",
+      balance: "BALANCE",
+      history: "ROUND HISTORY",
+      fairness: "FAIRNESS CHECK",
+      close: "CLOSE",
+      back: "BACK",
+      demo: "VIRTUAL CREDITS · DEMO ONLY",
+      launch: "ENTER THE ARENA",
+      welcome: "WELCOME TO NOVA RUSH"
+    },
+    ka: {
+      label: "ენა",
+      crash: "რაკეტის თამაში",
+      rockets: "რაკეტები",
+      missions: "მისიები",
+      levels: "დონეები",
+      stats: "სტატისტიკა",
+      account: "ანგარიში",
+      garage: "რაკეტების გარაჟი",
+      achievements: "მიღწევები",
+      statistics: "სტატისტიკა",
+      daily: "დღიური მისიები",
+      balance: "ბალანსი",
+      history: "რაუნდების ისტორია",
+      fairness: "სამართლიანობის შემოწმება",
+      close: "დახურვა",
+      back: "უკან",
+      demo: "ვირტუალური კრედიტები · დემო",
+      launch: "თამაშის დაწყება",
+      welcome: "კეთილი იყოს შენი მობრძანება NOVA RUSH-ში"
+    },
+    ru: {
+      label: "Язык",
+      crash: "ИГРА CRASH",
+      rockets: "РАКЕТЫ",
+      missions: "МИССИИ",
+      levels: "УРОВНИ",
+      stats: "СТАТИСТИКА",
+      account: "АККАУНТ",
+      garage: "ГАРАЖ РАКЕТ",
+      achievements: "ДОСТИЖЕНИЯ",
+      statistics: "СТАТИСТИКА",
+      daily: "ЕЖЕДНЕВНЫЕ МИССИИ",
+      balance: "БАЛАНС",
+      history: "ИСТОРИЯ РАУНДОВ",
+      fairness: "ПРОВЕРКА ЧЕСТНОСТИ",
+      close: "ЗАКРЫТЬ",
+      back: "НАЗАД",
+      demo: "ВИРТУАЛЬНЫЕ КРЕДИТЫ · ДЕМО",
+      launch: "ВОЙТИ В ИГРУ",
+      welcome: "ДОБРО ПОЖАЛОВАТЬ В NOVA RUSH"
+    },
+    tr: {
+      label: "Dil",
+      crash: "CRASH OYUNU",
+      rockets: "ROKETLER",
+      missions: "GÖREVLER",
+      levels: "SEVİYELER",
+      stats: "İSTATİSTİKLER",
+      account: "HESAP",
+      garage: "ROKET GARAJI",
+      achievements: "BAŞARILAR",
+      statistics: "İSTATİSTİKLER",
+      daily: "GÜNLÜK GÖREVLER",
+      balance: "BAKİYE",
+      history: "TUR GEÇMİŞİ",
+      fairness: "ADİLLİK KONTROLÜ",
+      close: "KAPAT",
+      back: "GERİ",
+      demo: "SANAL KREDİLER · DEMO",
+      launch: "OYUNA GİR",
+      welcome: "NOVA RUSH'A HOŞ GELDİN"
+    }
+  };
+
+  const aliases = {
+    "crash game": "crash",
+    "🚀 crash game": "crash",
+    "rockets": "rockets",
+    "🛸 rockets": "rockets",
+    "missions": "missions",
+    "🎯 missions": "missions",
+    "levels": "levels",
+    "🏆 levels": "levels",
+    "stats": "stats",
+    "📊 stats": "stats",
+    "account": "account",
+    "👤 account": "account",
+    "rocket garage": "garage",
+    "achievements": "achievements",
+    "statistics": "statistics",
+    "daily missions": "daily",
+    "balance": "balance",
+    "round history": "history",
+    "fairness check": "fairness",
+    "close": "close",
+    "back": "back",
+    "enter the arena": "launch",
+    "🚀 enter the arena": "launch",
+    "virtual credits · demo only": "demo",
+    "virtual credits · demo": "demo",
+    "language": "label",
+    "ენა": "label",
+    "язык": "label",
+    "dil": "label",
+    "რაკეტები": "rockets",
+    "მისიები": "missions",
+    "დონეები": "levels",
+    "სტატისტიკა": "stats",
+    "ანგარიში": "account",
+    "დახურვა": "close",
+    "უკან": "back",
+    "რაუნდების ისტორია": "history",
+    "სამართლიანობის შემოწმება": "fairness",
+    "ракет": "rockets",
+    "миссии": "missions",
+    "уровни": "levels",
+    "статистика": "stats",
+    "аккаунт": "account",
+    "ракеты": "rockets",
+    "закрыть": "close",
+    "назад": "back",
+    "roketler": "rockets",
+    "görevler": "missions",
+    "seviyeler": "levels",
+    "istatistikler": "stats",
+    "hesap": "account",
+    "kapat": "close",
+    "geri": "back"
+  };
+
+  function currentLanguage() {
+    try {
+      return localStorage.getItem("nova-language") || "en";
+    } catch {
+      return "en";
+    }
+  }
+
+  function translatePage(lang) {
+    const dictionary = languages[lang] || languages.en;
+
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll("[data-nr-page]").forEach(button => {
+      const key = button.dataset.nrPage;
+      const translation = dictionary[key];
+      if (translation) button.textContent = translation;
+    });
+
+    const heroTag = document.querySelector(".nr-demo-tag");
+    if (heroTag) heroTag.textContent = "✦ " + dictionary.demo;
+
+    const heroButton = document.querySelector(".nr-hero-action");
+    if (heroButton) heroButton.textContent = "🚀 " + dictionary.launch;
+
+    document.querySelectorAll(
+      "#nova-menu-overlay h2, #nova-menu-overlay h3, " +
+      "#nova-menu-overlay button, #nova-menu-overlay .nm-item"
+    ).forEach(element => {
+      if (element.id === "nova-language-select") return;
+
+      const original = element.dataset.nrOriginal ||
+        element.textContent.trim();
+
+      if (!element.dataset.nrOriginal) {
+        element.dataset.nrOriginal = original;
+      }
+
+      const normalized = original.toLowerCase()
+        .replace(/\s+/g, " ")
+        .trim()
+        .replace(/^[^\p{L}\p{N}]+/u, "");
+
+      const key = aliases[normalized];
+      if (key && dictionary[key]) {
+        element.textContent = dictionary[key];
+      }
+    });
+
+    const languageLabel =
+      document.querySelector(".nr-language-label");
+    if (languageLabel) {
+      languageLabel.textContent = dictionary.label;
+    }
+  }
+
+  function installLanguageSelector() {
+    const overlay = document.getElementById("nova-menu-overlay");
+    if (!overlay) return false;
+
+    let bar = overlay.querySelector(".nr-language-bar");
+
+    if (!bar) {
+      bar = document.createElement("div");
+      bar.className = "nr-language-bar";
+
+      const label = document.createElement("label");
+      label.className = "nr-language-label";
+      label.htmlFor = "nova-language-select";
+
+      const select = document.createElement("select");
+      select.id = "nova-language-select";
+      select.setAttribute("aria-label", "Language");
+
+      [
+        ["ka", "🇬🇪 ქართული"],
+        ["en", "🇬🇧 English"],
+        ["ru", "🇷🇺 Русский"],
+        ["tr", "🇹🇷 Türkçe"]
+      ].forEach(([value, name]) => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = name;
+        select.appendChild(option);
+      });
+
+      select.value = currentLanguage();
+
+      select.addEventListener("change", () => {
+        const lang = languages[select.value]
+          ? select.value : "en";
+
+        try {
+          localStorage.setItem("nova-language", lang);
+        } catch {}
+
+        translatePage(lang);
+      });
+
+      bar.append(label, select);
+      overlay.prepend(bar);
+    }
+
+    translatePage(currentLanguage());
+    return true;
+  }
+
+  function start() {
+    if (installLanguageSelector()) return;
+
+    const observer = new MutationObserver(() => {
+      if (installLanguageSelector()) observer.disconnect();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start, { once: true });
+  } else {
+    start();
+  }
+})();
+</script>
+
 </body>
 </html>
