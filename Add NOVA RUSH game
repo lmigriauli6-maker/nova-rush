@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NOVA RUSH</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080d20;color:white;font-family:Arial,sans-serif}
+main{max-width:500px;margin:auto;padding:18px}
+h1{text-align:center;color:#5cecff;letter-spacing:4px}
+p{text-align:center;color:#9cb2d8}
+.card{background:#121d36;border:1px solid #283b60;border-radius:16px;padding:16px;margin:14px 0}
+.balance{color:#6df5bb;font-size:25px;font-weight:bold}
+.arena{height:250px;background:radial-gradient(ellipse at bottom,#17365d,#080d20 70%);border-radius:13px;position:relative;overflow:hidden}
+#mult{position:absolute;top:20px;width:100%;text-align:center;font-size:44px;font-weight:bold}
+#rocket{position:absolute;bottom:20px;left:20%;font-size:45px;transform:rotate(-35deg)}
+label{display:block;color:#a9b8d6;font-size:13px;margin-top:12px}
+input{width:100%;padding:13px;margin-top:7px;border-radius:9px;background:#080f22;color:white;border:1px solid #364969;font-size:17px}
+button{width:100%;padding:14px;border:0;border-radius:10px;font-weight:bold;font-size:15px;margin-top:10px;background:#5cecff;color:#071426}
+#cash{background:#6df5bb}
+button:disabled{opacity:.4}
+#status{text-align:center;color:#b4c9ec;font-size:13px;min-height:20px;margin-top:12px}
+.history{display:flex;flex-wrap:wrap;gap:7px}
+.tag{padding:8px;border-radius:8px;background:#263653;font-size:13px}
+small{color:#9cb2d8;line-height:1.6}
+</style>
+</head>
+<body>
+<main>
+<h1>NOVA RUSH</h1>
+<p>SPACE CRASH · DEMO GAME · VIRTUAL CREDITS ONLY</p>
+
+<div class="card">
+<div>VIRTUAL BALANCE</div>
+<div class="balance"><span id="balance">1000</span> CR</div>
+<button id="reset" style="background:#263653;color:white">RESET DEMO</button>
+</div>
+
+<div class="card">
+<div class="arena">
+<div id="mult">1.00x</div>
+<div id="rocket">🚀</div>
+</div>
+<div id="status">Ready for launch</div>
+</div>
+
+<div class="card">
+<label for="bet">VIRTUAL BET (CR)</label>
+<input id="bet" type="number" min="1" step="1" value="50">
+<button id="start">START ROUND</button>
+<button id="cash" disabled>CASH OUT</button>
+</div>
+
+<div class="card">
+<h3>ROUND HISTORY</h3>
+<div class="history" id="history">No rounds yet</div>
+</div>
+
+<div class="card">
+<h3>FAIRNESS DEMO</h3>
+<small>This demo uses a local random simulation. It is not a cryptographically provably fair system.</small>
+<button id="verify" style="background:#263653;color:white">CHECK LAST ROUND</button>
+<div id="check" style="font-size:13px;margin-top:10px"></div>
+</div>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+let balance=1000,playing=false,bet=0,mult=1,target=1,timer=null,history=[],last=null;
+function showBalance(){$("balance").textContent=balance.toFixed(0)}
+function drawHistory(){
+ $("history").innerHTML=history.length?history.map(x=>'<span class="tag" style="color:'+(x.crash?'#ff8ca5':'#6df5bb')+'">'+x.value.toFixed(2)+'x</span>').join(""):"No rounds yet";
+}
+function randomCrash(){return Math.max(1,Math.floor((1/(1-Math.random()))*100)/100)}
+function start(){
+ if(playing)return;
+ bet=Number($("bet").value);
+ if(!Number.isInteger(bet)||bet<1){$("status").textContent="Enter a valid whole-number bet.";return}
+ if(bet>balance){$("status").textContent="Not enough demo credits.";return}
+ balance-=bet;showBalance();playing=true;mult=1;target=randomCrash();
+ $("start").disabled=true;$("cash").disabled=false;$("check").textContent="";
+ $("status").textContent="Rocket launched! Cash out before the crash.";
+ $("mult").textContent="1.00x";$("rocket").style.left="20%";$("rocket").style.bottom="20px";
+ let began=Date.now();
+ timer=setInterval(()=>{
+  if(!playing)return;
+  let elapsed=(Date.now()-began)/1000;
+  mult=Math.exp(elapsed*.22);
+  if(mult>=target){
+   mult=target;finish(true);return;
+  }
+  $("mult").textContent=mult.toFixed(2)+"x";
+  $("rocket").style.left=Math.min(78,20+elapsed*5)+"%";
+  $("rocket").style.bottom=Math.min(175,20+elapsed*12)+"px";
+ },50);
+}
+function finish(crash){
+ if(!playing)return;
+ playing=false;clearInterval(timer);
+ $("start").disabled=false;$("cash").disabled=true;
+ $("mult").textContent=crash?"💥 "+mult.toFixed(2)+"x":mult.toFixed(2)+"x";
+ $("status").textContent=crash?"Rocket crashed! Round over.":"";
+ history.unshift({value:mult,crash:crash});history=history.slice(0,10);drawHistory();
+ last={target:target,ended:mult,crash:crash};
+}
+function cashOut(){
+ if(!playing)return;
+ let payout=Math.floor(bet*mult*100)/100;
+ balance+=payout;showBalance();
+ finish(false);
+ $("status").textContent="CASH OUT successful: "+payout.toFixed(2)+" CR";
+}
+$("start").onclick=start;
+$("cash").onclick=cashOut;
+$("reset").onclick=()=>{
+ clearInterval(timer);playing=false;balance=1000;history=[];last=null;
+ showBalance();drawHistory();$("mult").textContent="1.00x";
+ $("rocket").style.left="20%";$("rocket").style.bottom="20px";
+ $("start").disabled=false;$("cash").disabled=true;
+ $("status").textContent="Demo balance reset.";$("check").textContent="";
+};
+$("verify").onclick=()=>{
+ $("check").textContent=last?
+ "Last round recorded. Simulated crash point: "+last.target.toFixed(2)+"x. This is a record check, not independent cryptographic proof."
+ :"Play one round first.";
+};
+showBalance();drawHistory();
+</script>
+</body>
+</html>
+
