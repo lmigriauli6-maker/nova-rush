@@ -2421,5 +2421,584 @@ document.getElementById("auth-login").onclick = async () => {
 })();
 </script>
 
+<script>
+(() => {
+  if (document.getElementById("nova-casino-redesign-v1")) return;
+
+  const style = document.createElement("style");
+  style.id = "nova-casino-redesign-v1";
+
+  style.textContent = `
+    :root {
+      color-scheme: dark;
+      --nr-bg: #070711;
+      --nr-panel: #111020;
+      --nr-border: rgba(164, 104, 255, .28);
+      --nr-purple: #a855f7;
+      --nr-pink: #ff36ce;
+      --nr-blue: #00e5ff;
+      --nr-gold: #ffd166;
+      --nr-text: #f7f4ff;
+      --nr-muted: #aaa5c3;
+    }
+
+    html {
+      background: var(--nr-bg) !important;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0 !important;
+      color: var(--nr-text) !important;
+      background:
+        radial-gradient(ellipse at 10% 0%,
+          rgba(120, 42, 190, .22), transparent 38%),
+        radial-gradient(ellipse at 100% 25%,
+          rgba(0, 180, 255, .10), transparent 35%),
+        linear-gradient(180deg, #0a0815, #05050b 75%) !important;
+      font-family: -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Arial, sans-serif !important;
+    }
+
+    .app {
+      width: min(100% - 28px, 1180px) !important;
+      max-width: 1180px !important;
+      margin: 0 auto !important;
+      padding: 20px 0 32px !important;
+      display: grid !important;
+      grid-template-columns: minmax(0, 1.35fr)
+        minmax(290px, .85fr);
+      grid-template-areas:
+        "header header"
+        "balance balance"
+        "arena bet"
+        "history stats"
+        "fairness fairness"
+        "footer footer";
+      gap: 16px !important;
+    }
+
+    .app > header {
+      grid-area: header;
+      text-align: left !important;
+      padding: 12px 0 8px !important;
+      min-width: 0;
+    }
+
+    .logo {
+      display: inline-block;
+      font-size: clamp(30px, 5vw, 46px) !important;
+      line-height: 1.1;
+      letter-spacing: 4px !important;
+      font-weight: 1000 !important;
+      color: #fff !important;
+      text-shadow:
+        0 0 10px rgba(0, 229, 255, .75),
+        0 0 28px rgba(168, 85, 247, .7) !important;
+    }
+
+    .sub {
+      margin-top: 9px !important;
+      font-size: 10px !important;
+      letter-spacing: 3px !important;
+      color: var(--nr-blue) !important;
+    }
+
+    .nr-lobby-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 22px 0 16px;
+      padding: 10px;
+      border: 1px solid var(--nr-border);
+      border-radius: 14px;
+      background: rgba(14, 12, 29, .88);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .22);
+    }
+
+    .nr-lobby-nav button {
+      flex: 1 1 auto;
+      min-height: 40px;
+      padding: 10px 14px !important;
+      color: #dcd6f4 !important;
+      background: transparent !important;
+      border: 1px solid transparent !important;
+      border-radius: 9px !important;
+      font-size: 11px !important;
+      font-weight: 850 !important;
+      letter-spacing: .6px;
+    }
+
+    .nr-lobby-nav button:first-child {
+      color: white !important;
+      border-color: rgba(0, 229, 255, .35) !important;
+      background: linear-gradient(
+        110deg, rgba(168, 85, 247, .25),
+        rgba(0, 229, 255, .09)
+      ) !important;
+    }
+
+    .nr-lobby-nav button:active {
+      transform: scale(.97);
+    }
+
+    .nr-hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(20px, 4vw, 36px);
+      border: 1px solid rgba(168, 85, 247, .5);
+      border-radius: 20px;
+      background:
+        radial-gradient(ellipse at 90% 50%,
+          rgba(0, 229, 255, .17), transparent 38%),
+        radial-gradient(ellipse at 60% 0%,
+          rgba(255, 54, 206, .15), transparent 50%),
+        linear-gradient(115deg, #19102d, #0b1020 70%);
+      box-shadow: inset 0 0 40px rgba(168, 85, 247, .07);
+    }
+
+    .nr-hero:after {
+      content: "✦";
+      position: absolute;
+      right: 8%;
+      top: 12%;
+      color: var(--nr-blue);
+      font-size: clamp(48px, 9vw, 90px);
+      opacity: .6;
+      text-shadow: 0 0 28px var(--nr-blue);
+      pointer-events: none;
+    }
+
+    .nr-demo-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 10px;
+      border: 1px solid rgba(255, 209, 102, .35);
+      border-radius: 7px;
+      color: var(--nr-gold);
+      background: rgba(255, 209, 102, .07);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 1.3px;
+    }
+
+    .nr-hero h2 {
+      max-width: 650px;
+      margin: 18px 0 10px;
+      color: white !important;
+      font-size: clamp(25px, 5vw, 44px);
+      line-height: 1.08;
+      font-weight: 1000;
+      letter-spacing: -.8px;
+      text-shadow: 0 0 22px rgba(168, 85, 247, .3);
+    }
+
+    .nr-hero p {
+      max-width: 560px;
+      margin: 0;
+      color: #c0bad8 !important;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .nr-hero-action {
+      margin-top: 20px;
+      padding: 13px 19px !important;
+      color: #080713 !important;
+      background: linear-gradient(
+        100deg, var(--nr-blue), #b3fff7
+      ) !important;
+      border: 0 !important;
+      border-radius: 10px !important;
+      font-weight: 950 !important;
+      box-shadow: 0 0 24px rgba(0, 229, 255, .2);
+    }
+
+    .app > .panel {
+      min-width: 0;
+      margin: 0 !important;
+      padding: clamp(14px, 2.5vw, 22px) !important;
+      color: var(--nr-text) !important;
+      border: 1px solid var(--nr-border) !important;
+      border-radius: 17px !important;
+      background:
+        linear-gradient(145deg,
+          rgba(25, 19, 43, .97),
+          rgba(10, 12, 25, .98)) !important;
+      box-shadow:
+        0 12px 32px rgba(0, 0, 0, .22),
+        inset 0 1px rgba(255, 255, 255, .025);
+    }
+
+    .app > .panel:nth-of-type(1) {
+      grid-area: balance;
+      border-color: rgba(255, 209, 102, .32) !important;
+      background:
+        linear-gradient(110deg,
+          rgba(42, 26, 54, .98),
+          rgba(15, 19, 36, .98)) !important;
+    }
+
+    .app > .panel:nth-of-type(2) {
+      grid-area: arena;
+    }
+
+    .app > .panel:nth-of-type(3) {
+      grid-area: bet;
+    }
+
+    .app > .panel:nth-of-type(4) {
+      grid-area: history;
+    }
+
+    .app > .panel:nth-of-type(5) {
+      grid-area: stats;
+    }
+
+    .app > .panel:nth-of-type(6) {
+      grid-area: fairness;
+    }
+
+    .balance {
+      color: var(--nr-gold) !important;
+      font-size: clamp(26px, 4vw, 36px) !important;
+      text-shadow: 0 0 18px rgba(255, 209, 102, .2);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .muted, .label, .small {
+      color: var(--nr-muted) !important;
+    }
+
+    .arena {
+      height: clamp(270px, 35vw, 390px) !important;
+      border: 1px solid rgba(0, 229, 255, .45) !important;
+      border-radius: 14px !important;
+      background:
+        radial-gradient(ellipse at 50% 110%,
+          #3c1d72 0%, #16162f 45%, #070812 100%) !important;
+      box-shadow:
+        inset 0 0 45px rgba(0, 229, 255, .06),
+        0 0 24px rgba(0, 229, 255, .045);
+    }
+
+    .mult {
+      color: white !important;
+      font-size: clamp(46px, 7vw, 70px) !important;
+      text-shadow:
+        0 0 15px rgba(0, 229, 255, .6),
+        0 0 35px rgba(168, 85, 247, .55) !important;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #rocket {
+      filter:
+        drop-shadow(0 0 10px var(--nr-blue))
+        drop-shadow(0 0 24px var(--nr-purple));
+    }
+
+    #trail {
+      box-shadow: 0 0 20px rgba(0, 229, 255, .5);
+    }
+
+    .status {
+      min-height: 34px;
+      line-height: 1.6;
+      color: #d8d1ee !important;
+    }
+
+    .app .panel strong {
+      color: #f5edff;
+      letter-spacing: .45px;
+    }
+
+    input {
+      width: 100%;
+      min-height: 46px;
+      padding: 12px !important;
+      color: white !important;
+      background: #090916 !important;
+      border: 1px solid #41345e !important;
+      border-radius: 10px !important;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--nr-blue) !important;
+      box-shadow: 0 0 0 3px rgba(0, 229, 255, .09) !important;
+    }
+
+    button {
+      transition: transform .15s ease, filter .15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:active:not(:disabled) {
+      transform: scale(.975);
+    }
+
+    .primary {
+      color: #fff !important;
+      background: linear-gradient(
+        105deg, #8d2cff, #d42bb8
+      ) !important;
+      border: 1px solid rgba(0, 229, 255, .3) !important;
+      box-shadow: 0 0 22px rgba(168, 85, 247, .22);
+    }
+
+    .cash {
+      color: #071b1a !important;
+      background: linear-gradient(
+        105deg, #00e5c3, #b0ffce
+      ) !important;
+      box-shadow: 0 0 20px rgba(0, 229, 195, .15);
+    }
+
+    .secondary, .quick button {
+      color: #e8ddff !important;
+      background: linear-gradient(
+        135deg, #29203f, #141a2e
+      ) !important;
+      border: 1px solid rgba(168, 85, 247, .3) !important;
+    }
+
+    .pill {
+      padding: 8px 11px !important;
+      color: #cfc0ff;
+      background: #19142c !important;
+      border: 1px solid rgba(168, 85, 247, .28);
+      border-radius: 8px !important;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat {
+      background: #0b0b19 !important;
+      border: 1px solid rgba(168, 85, 247, .22);
+      border-radius: 12px !important;
+    }
+
+    .stat strong {
+      color: var(--nr-blue) !important;
+    }
+
+    .footer {
+      grid-area: footer;
+      color: #817b9d !important;
+      padding: 14px 0 !important;
+    }
+
+    #nova-menu-button {
+      color: var(--nr-blue) !important;
+      background: rgba(12, 8, 29, .96) !important;
+      border: 1px solid rgba(0, 229, 255, .45) !important;
+      box-shadow: 0 0 20px rgba(0, 229, 255, .14);
+      backdrop-filter: blur(12px);
+    }
+
+    #nova-menu-overlay {
+      background:
+        radial-gradient(ellipse at top right,
+          rgba(255, 54, 206, .12), transparent 40%),
+        rgba(5, 4, 13, .98) !important;
+      backdrop-filter: blur(18px);
+    }
+
+    #nova-menu-overlay .nm-item {
+      color: var(--nr-text) !important;
+      background: linear-gradient(
+        110deg, #1b102c, #0b1526
+      ) !important;
+      border: 1px solid rgba(168, 85, 247, .4) !important;
+      border-radius: 12px !important;
+    }
+
+    #nova-menu-overlay .nm-card,
+    #nova-menu-overlay .daily-xp,
+    #nova-menu-overlay .daily-mission,
+    #nova-menu-overlay .lv-card,
+    #nova-menu-overlay .lv-ach,
+    #nova-menu-overlay .st-card {
+      color: var(--nr-text) !important;
+      background: linear-gradient(
+        145deg, #19132c, #0b1222
+      ) !important;
+      border-color: var(--nr-border) !important;
+      border-radius: 13px !important;
+    }
+
+    #nova-menu-overlay h2,
+    #nova-menu-overlay h3 {
+      color: #e5c5ff !important;
+    }
+
+    #nova-menu-overlay #nova-garage {
+      display: block !important;
+    }
+
+    #nova-menu-overlay section {
+      display: block !important;
+    }
+
+    #auth-panel {
+      color: var(--nr-text) !important;
+      background: linear-gradient(
+        145deg, #19132c, #0b1222
+      ) !important;
+      border: 1px solid var(--nr-border) !important;
+      border-radius: 15px !important;
+    }
+
+    #auth-panel input {
+      margin: 6px 0;
+      width: 100%;
+    }
+
+    #auth-panel button {
+      color: white !important;
+      background: linear-gradient(
+        100deg, #822cff, #d42bb8
+      ) !important;
+      border-radius: 10px !important;
+    }
+
+    button:focus-visible, input:focus-visible {
+      outline: 2px solid var(--nr-blue);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        width: calc(100% - 22px) !important;
+        padding-top: 14px !important;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+          "header"
+          "balance"
+          "arena"
+          "bet"
+          "history"
+          "stats"
+          "fairness"
+          "footer";
+        gap: 12px !important;
+      }
+
+      .app > .panel {
+        padding: 14px !important;
+      }
+
+      .arena {
+        height: clamp(250px, 72vw, 340px) !important;
+      }
+
+      .nr-lobby-nav {
+        gap: 5px;
+        margin-top: 17px;
+      }
+
+      .nr-lobby-nav button {
+        flex: 1 1 28%;
+        padding: 9px 5px !important;
+        font-size: 10px !important;
+      }
+
+      .nr-hero {
+        padding: 20px 16px;
+      }
+
+      .nr-hero:after {
+        right: 5%;
+        top: 20%;
+        opacity: .35;
+      }
+
+      .logo {
+        letter-spacing: 3px !important;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *:before, *:after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  `;
+
+  document.head.appendChild(style);
+
+  const app = document.querySelector(".app");
+  const header = app?.querySelector("header");
+
+  if (!app || !header) return;
+
+  if (!header.querySelector(".nr-lobby-nav")) {
+    header.insertAdjacentHTML("beforeend", `
+      <nav class="nr-lobby-nav" aria-label="NOVA RUSH navigation">
+        <button type="button" data-nr-page="crash">🚀 CRASH GAME</button>
+        <button type="button" data-nr-page="garage">🛸 ROCKETS</button>
+        <button type="button" data-nr-page="missions">🎯 MISSIONS</button>
+        <button type="button" data-nr-page="achievements">🏆 LEVELS</button>
+        <button type="button" data-nr-page="stats">📊 STATS</button>
+        <button type="button" data-nr-page="account">👤 ACCOUNT</button>
+      </nav>
+
+      <section class="nr-hero">
+        <span class="nr-demo-tag">✦ VIRTUAL CREDITS · DEMO ONLY</span>
+        <h2>LAUNCH INTO THE UNKNOWN.</h2>
+        <p>
+          Take control of your rocket, watch the multiplier rise
+          and cash out before the crash. Your next flight starts here.
+        </p>
+        <button class="nr-hero-action" type="button" data-nr-page="crash">
+          🚀 ENTER THE ARENA
+        </button>
+      </section>
+    `);
+  }
+
+  function goToPage(page) {
+    if (page === "crash") {
+      document.querySelector(".arena")?.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+      return;
+    }
+
+    const overlay = document.getElementById("nova-menu-overlay");
+    const menuButton = document.getElementById("nova-menu-button");
+
+    if (!overlay || !menuButton) {
+      if (page === "account") {
+        document.getElementById("auth-panel")?.scrollIntoView({
+          behavior: "smooth"
+        });
+      }
+      return;
+    }
+
+    if (!overlay.classList.contains("open")) {
+      menuButton.click();
+    }
+
+    window.setTimeout(() => {
+      const item = overlay.querySelector(
+        '[data-page="' + page + '"]'
+      );
+      if (item) item.click();
+    }, 80);
+  }
+
+  header.querySelectorAll("[data-nr-page]").forEach(button => {
+    button.addEventListener("click", () => {
+      goToPage(button.dataset.nrPage);
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
