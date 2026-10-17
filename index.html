@@ -302,5 +302,61 @@ stars();
 update();
 showMult(1);
 </script>
+ <div id="auth-panel" style="max-width:400px;margin:20px auto;padding:24px;background:#111827;color:white;border-radius:16px;font-family:Arial,sans-serif">
+  <h2>NOVA RUSH</h2>
+  <p>შედი ან შექმენი ანგარიში</p>
+  <input id="auth-email" type="email" placeholder="ელფოსტა" style="width:100%;padding:12px;margin:6px 0;box-sizing:border-box">
+  <input id="auth-password" type="password" placeholder="პაროლი (მინ. 6 სიმბოლო)" style="width:100%;padding:12px;margin:6px 0;box-sizing:border-box">
+  <button id="auth-signup" style="padding:12px;margin:6px 0;width:100%">რეგისტრაცია</button>
+  <button id="auth-login" style="padding:12px;margin:6px 0;width:100%">შესვლა</button>
+  <p id="auth-message"></p>
+</div>
+<script>
+const NOVA_SUPABASE_URL = "https://smswewgknbqurtmxazmm.supabase.co";
+const NOVA_SUPABASE_KEY = "sb_publishable_e89hdtAL1lJ8hG4bxoXbIg_zV6DOWbK";
+
+const novaAuth = window.supabase.createClient(
+  NOVA_SUPABASE_URL,
+  NOVA_SUPABASE_KEY
+);
+
+const emailInput = document.getElementById("auth-email");
+const passwordInput = document.getElementById("auth-password");
+const message = document.getElementById("auth-message");
+
+document.getElementById("auth-signup").onclick = async () => {
+  message.textContent = "ანგარიში იქმნება...";
+
+  const { data, error } = await novaAuth.auth.signUp({
+    email: emailInput.value.trim(),
+    password: passwordInput.value
+  });
+
+  if (error) {
+    message.textContent = error.message;
+    return;
+  }
+
+  message.textContent = data.session
+    ? "რეგისტრაცია წარმატებულია!"
+    : "შეამოწმე ელფოსტა და დაადასტურე ანგარიში.";
+};
+
+document.getElementById("auth-login").onclick = async () => {
+  message.textContent = "შესვლა...";
+
+  const { data, error } = await novaAuth.auth.signInWithPassword({
+    email: emailInput.value.trim(),
+    password: passwordInput.value
+  });
+
+  if (error) {
+    message.textContent = error.message;
+    return;
+  }
+
+  message.textContent = "წარმატებით შეხვედით! 🚀 " + data.user.email;
+};
+</script>
 </body>
 </html>
