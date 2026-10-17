@@ -887,5 +887,176 @@ document.getElementById("auth-login").onclick = async () => {
 })();
 </script>
 
+<script>
+(() => {
+  if (document.getElementById('nova-garage')) return;
+
+  const arena = document.querySelector('.arena');
+  if (!arena) {
+    console.warn('NOVA RUSH: game arena not found');
+    return;
+  }
+
+  const skins = {
+    nova: {
+      name: 'NOVA',
+      filter: 'none',
+      trail: 'linear-gradient(90deg,#9b5cff,#36c8ff)',
+      flame: 'linear-gradient(to bottom,#ffffff,#36c8ff,#9b5cff,transparent)'
+    },
+    ice: {
+      name: 'ICE PHOENIX',
+      filter: 'hue-rotate(35deg) saturate(1.4)',
+      trail: 'linear-gradient(90deg,#38f5ff,#d9ffff)',
+      flame: 'linear-gradient(to bottom,#ffffff,#38f5ff,#347bff,transparent)'
+    },
+    plasma: {
+      name: 'PLASMA',
+      filter: 'hue-rotate(65deg) saturate(1.8)',
+      trail: 'linear-gradient(90deg,#ff43e8,#9b5cff)',
+      flame: 'linear-gradient(to bottom,#ffffff,#ff43e8,#9b5cff,transparent)'
+    },
+    solar: {
+      name: 'SOLAR',
+      filter: 'hue-rotate(290deg) saturate(1.6)',
+      trail: 'linear-gradient(90deg,#ffe45c,#ff7b36)',
+      flame: 'linear-gradient(to bottom,#ffffff,#ffe45c,#ff7b36,transparent)'
+    }
+  };
+
+  const style = document.createElement('style');
+  style.textContent = `
+    #nova-garage {
+      margin: 16px 0;
+      padding: 17px;
+      color: #f5f0ff;
+      background: linear-gradient(145deg,#17132e,#090d20);
+      border: 1px solid #7448c9;
+      border-radius: 18px;
+      font-family: inherit;
+    }
+    #nova-garage h3 {
+      margin: 0 0 5px;
+      color: #d7b7ff;
+      font-size: 19px;
+    }
+    #nova-garage .ng-sub {
+      color: #aaa8cb;
+      font-size: 12px;
+      margin-bottom: 14px;
+    }
+    #nova-garage .ng-grid {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 9px;
+    }
+    #nova-garage .ng-skin {
+      padding: 12px 6px;
+      min-height: 86px;
+      color: #eee7ff;
+      background: #11152b;
+      border: 1px solid #34305d;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    #nova-garage .ng-skin[aria-pressed="true"] {
+      border: 2px solid #a878ff;
+      background: #241744;
+      box-shadow: 0 0 15px #804cff35;
+    }
+    #nova-garage .ng-icon {
+      display: block;
+      font-size: 27px;
+      margin-bottom: 7px;
+    }
+    #nova-garage .ng-name {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .7px;
+    }
+    #nova-garage .ng-status {
+      color: #8eeaff;
+      font-size: 12px;
+      margin-top: 12px;
+      min-height: 18px;
+    }
+  `;
+  document.head.appendChild(style);
+
+  const garage = document.createElement('section');
+  garage.id = 'nova-garage';
+  garage.innerHTML = `
+    <h3>🚀 ROCKET GARAGE</h3>
+    <div class="ng-sub">CHOOSE YOUR SPACECRAFT STYLE</div>
+    <div class="ng-grid">
+      <button class="ng-skin" data-skin="nova" aria-pressed="false">
+        <span class="ng-icon">🚀</span>
+        <span class="ng-name">NOVA</span>
+      </button>
+      <button class="ng-skin" data-skin="ice" aria-pressed="false">
+        <span class="ng-icon">🧊</span>
+        <span class="ng-name">ICE PHOENIX</span>
+      </button>
+      <button class="ng-skin" data-skin="plasma" aria-pressed="false">
+        <span class="ng-icon">💜</span>
+        <span class="ng-name">PLASMA</span>
+      </button>
+      <button class="ng-skin" data-skin="solar" aria-pressed="false">
+        <span class="ng-icon">☀️</span>
+        <span class="ng-name">SOLAR</span>
+      </button>
+    </div>
+    <div class="ng-status" aria-live="polite">Select your rocket.</div>
+  `;
+
+  arena.insertAdjacentElement('afterend', garage);
+
+  const status = garage.querySelector('.ng-status');
+
+  function selectSkin(id) {
+    const skin = skins[id] || skins.nova;
+    const rocket = document.querySelector('#rocket');
+    const trail = document.querySelector('#trail');
+    const flame = document.querySelector('#nova-engine-flame');
+
+    if (rocket) {
+      rocket.style.filter =
+        skin.filter === 'none'
+          ? ''
+          : skin.filter + ' drop-shadow(0 0 10px #55dfff)';
+    }
+
+    if (trail) trail.style.background = skin.trail;
+    if (flame) flame.style.background = skin.flame;
+
+    garage.querySelectorAll('.ng-skin').forEach(button => {
+      button.setAttribute(
+        'aria-pressed',
+        String(button.dataset.skin === id)
+      );
+    });
+
+    status.textContent = skin.name + ' SELECTED ✓';
+
+    try {
+      localStorage.setItem('nova-rush-skin', id);
+    } catch (_) {}
+  }
+
+  garage.querySelectorAll('.ng-skin').forEach(button => {
+    button.addEventListener('click', () => {
+      selectSkin(button.dataset.skin);
+    });
+  });
+
+  let saved = 'nova';
+  try {
+    saved = localStorage.getItem('nova-rush-skin') || 'nova';
+  } catch (_) {}
+
+  selectSkin(saved);
+})();
+</script>
+
 </body>
 </html>
