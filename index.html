@@ -469,8 +469,34 @@ function crashPoint(){
  const r=Math.random();
  return Math.max(1.01,Math.floor((1/(1-r))*100)/100);
 }
-function startRound(){
+async function startRound(){
  if(playing)return;
+  if (!novaAuth) {
+  status("Authentication is unavailable.", "bad");
+  return;
+ }
+
+ const { data: sessionData, error: sessionError } =
+  await novaAuth.auth.getSession();
+
+ if (sessionError || !sessionData.session) {
+  status("Please sign in before playing.", "bad");
+  return;
+ }
+  const userId = sessionData.session.user.id;
+
+ const { data: profile, error: profileError } = await novaAuth
+  .from("nova_profiles")
+  .select("age_verified, identity_verified")
+  .eq("user_id", userId)
+  .maybeSingle();
+
+ if (profileError || !profile ||
+     profile.age_verified !== true ||
+     profile.identity_verified !== true) {
+  status("Age and identity verification required.", "bad");
+  return;
+ }
  const amount=Number($("bet").value);
  const auto=Number($("auto").value)||0;
  if(!Number.isSafeInteger(amount)||amount<1){
