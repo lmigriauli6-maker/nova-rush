@@ -3887,5 +3887,336 @@ document.getElementById("auth-login").onclick = async () => {
 })();
 </script>
 
+<style id="nova-luxury-theme">
+/* NOVA RUSH — LUXURY BLACK & GOLD
+   Visual overrides only. No game logic changes. */
+
+:root {
+  --nr-gold: #f2c66d;
+  --nr-gold-bright: #ffe6a3;
+  --nr-gold-dark: #8d6525;
+  --nr-black: #070707;
+  --nr-panel: #11100e;
+  --nr-border: rgba(242, 198, 109, .25);
+  --nr-text: #f7f0e2;
+  --nr-muted: #aaa18f;
+}
+
+html {
+  background: var(--nr-black);
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  color: var(--nr-text);
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      rgba(140, 94, 28, .18),
+      transparent 48%
+    ),
+    linear-gradient(180deg, #0b0a08, #050505 70%);
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+}
+
+.app {
+  color: var(--nr-text);
+}
+
+/* Brand header */
+.app header {
+  position: relative;
+  isolation: isolate;
+  border-bottom: 1px solid var(--nr-border);
+  background: linear-gradient(135deg, #17130b, #080808 65%);
+  box-shadow: 0 8px 35px rgba(0, 0, 0, .3);
+}
+
+.logo {
+  color: var(--nr-gold-bright) !important;
+  letter-spacing: .13em;
+  text-shadow: 0 0 22px rgba(242, 198, 109, .22);
+}
+
+/* Navigation */
+.nr-lobby-nav {
+  gap: 8px;
+}
+
+.nr-lobby-nav button {
+  color: var(--nr-gold-bright);
+  background: linear-gradient(145deg, #19150e, #0b0b0a);
+  border: 1px solid var(--nr-border);
+  border-radius: 10px;
+  transition:
+    border-color .2s ease,
+    box-shadow .2s ease,
+    transform .2s ease;
+}
+
+.nr-lobby-nav button:hover,
+.nr-lobby-nav button:focus-visible {
+  border-color: var(--nr-gold);
+  box-shadow: 0 0 18px rgba(242, 198, 109, .16);
+}
+
+/* Hero section */
+.nr-hero {
+  position: relative;
+  overflow: hidden;
+  color: var(--nr-text);
+  background:
+    radial-gradient(ellipse at 85% 20%,
+      rgba(242, 198, 109, .12), transparent 45%),
+    linear-gradient(145deg, #17130c, #090909 65%);
+  border: 1px solid var(--nr-border);
+  border-radius: 18px;
+  box-shadow: 0 15px 45px #0008;
+}
+
+.nr-hero h2 {
+  color: var(--nr-gold-bright);
+  letter-spacing: .055em;
+  text-shadow: 0 0 24px rgba(242, 198, 109, .15);
+}
+
+.nr-demo-tag {
+  color: var(--nr-gold);
+  letter-spacing: .1em;
+}
+
+/* Existing control strip */
+.nr-control-strip {
+  color: var(--nr-text);
+  background: linear-gradient(145deg, #17140e, #0a0a09);
+  border-color: var(--nr-border);
+  box-shadow: 0 8px 30px #0005;
+}
+
+.nr-tool {
+  color: var(--nr-gold-bright);
+  background: #17140f;
+  border-color: #594523;
+  border-radius: 9px;
+  transition: all .2s ease;
+}
+
+.nr-tool:hover,
+.nr-tool:focus-visible {
+  border-color: var(--nr-gold);
+  box-shadow: 0 0 15px rgba(242, 198, 109, .17);
+}
+
+.nr-tool.active {
+  color: #fff0bf;
+  background: #30230e;
+  border-color: var(--nr-gold);
+  box-shadow: inset 0 0 12px rgba(242, 198, 109, .08);
+}
+
+.nr-session {
+  color: var(--nr-muted);
+}
+
+.nr-demo-status {
+  color: #f4dfae;
+  background: #141109;
+  border-color: var(--nr-border);
+}
+
+.nr-status-dot {
+  background: #f2c66d;
+  box-shadow: 0 0 12px #f2c66d;
+}
+
+/* General controls */
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--nr-gold);
+  outline-offset: 3px;
+}
+
+input,
+select,
+textarea {
+  color: var(--nr-text);
+  background-color: #100f0c;
+  border-color: #554322;
+  border-radius: 9px;
+  accent-color: var(--nr-gold);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #938976;
+}
+
+/* Main game buttons: preserve existing IDs and handlers */
+#start,
+#cash,
+#check {
+  border-radius: 10px;
+  transition:
+    filter .2s ease,
+    box-shadow .2s ease,
+    transform .2s ease;
+}
+
+#start {
+  color: #171006;
+  background: linear-gradient(135deg, #ffe8a8, #c18a32);
+  border: 1px solid #ffe3a0;
+  box-shadow: 0 0 20px rgba(242, 198, 109, .17);
+  font-weight: 800;
+}
+
+#cash {
+  color: #fff0c5;
+  background: linear-gradient(135deg, #483416, #1a140a);
+  border: 1px solid var(--nr-gold-dark);
+}
+
+#start:not(:disabled):hover,
+#cash:not(:disabled):hover {
+  filter: brightness(1.12);
+  box-shadow: 0 0 24px rgba(242, 198, 109, .25);
+}
+
+#start:disabled,
+#cash:disabled {
+  cursor: not-allowed;
+  opacity: .48;
+}
+
+/* Rocket glow — does not override JS position */
+#rocket {
+  filter:
+    drop-shadow(0 0 7px rgba(255, 207, 112, .85))
+    drop-shadow(0 0 20px rgba(255, 151, 48, .42));
+  animation: nr-rocket-glow 1.6s ease-in-out infinite alternate;
+  will-change: filter;
+}
+
+#trail {
+  filter:
+    drop-shadow(0 0 5px #ffb84a)
+    drop-shadow(0 0 14px rgba(255, 127, 34, .8));
+  animation: nr-trail-glow .45s ease-in-out infinite alternate;
+  will-change: filter, opacity;
+}
+
+@keyframes nr-rocket-glow {
+  from {
+    filter: drop-shadow(0 0 5px #eeb955);
+  }
+  to {
+    filter:
+      drop-shadow(0 0 10px #ffe3a0)
+      drop-shadow(0 0 23px rgba(255, 157, 46, .65));
+  }
+}
+
+@keyframes nr-trail-glow {
+  from {
+    opacity: .72;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Toasts and session dialog */
+.nr-toast {
+  color: #fff0c8;
+  background: #151108;
+  border-color: #98712d;
+  box-shadow: 0 0 28px rgba(242, 198, 109, .12);
+}
+
+.nr-session-dialog {
+  background: rgba(4, 4, 3, .9);
+}
+
+.nr-session-card {
+  color: var(--nr-text);
+  background: linear-gradient(145deg, #1b170e, #0a0a09);
+  border: 1px solid var(--nr-border);
+  border-radius: 16px;
+  box-shadow: 0 0 35px rgba(242, 198, 109, .1);
+}
+
+/* Mobile layout */
+@media (max-width: 600px) {
+  .app {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .nr-lobby-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .nr-lobby-nav button {
+    min-height: 42px;
+    padding: 9px 7px;
+    font-size: 12px;
+  }
+
+  .nr-control-strip {
+    align-items: stretch;
+    gap: 9px;
+    padding: 10px;
+  }
+
+  .nr-control-group {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .nr-tool {
+    min-height: 42px;
+    padding: 10px;
+  }
+
+  .nr-hero {
+    border-radius: 14px;
+    padding: 16px;
+  }
+
+  #start,
+  #cash {
+    min-height: 46px;
+  }
+}
+
+/* Respect reduced-motion accessibility setting */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  #rocket,
+  #trail {
+    animation: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+
 </body>
 </html>
