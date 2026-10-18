@@ -653,6 +653,23 @@ document.getElementById("auth-login").onclick = async () => {
 
   message.textContent = "წარმატებით შეხვედით! 🚀 " + data.user.email;
 };
+ // Check whether a Supabase session exists.
+(async () => {
+  const { data, error } = await novaAuth.auth.getSession();
+
+  if (error) {
+    message.textContent = "სესიის შემოწმება ვერ მოხერხდა.";
+    return;
+  }
+
+  if (data.session) {
+    message.textContent =
+      "შესული ხარ როგორც " + data.session.user.email;
+  } else {
+    message.textContent =
+      "თამაშის გასაგრძელებლად შედი შენს ანგარიშში.";
+  }
+})();
 </script>
  <section>
   <h2>About NOVA RUSH</h2>
