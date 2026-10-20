@@ -1216,6 +1216,7 @@ document.getElementById("auth-login").onclick = async () => {
   const app = document.querySelector('.app');
   const garage = document.getElementById('nova-garage');
   const account = document.getElementById('auth-panel');
+  const verification = document.getElementById('nova-didit-verification');
   const about = Array.from(document.querySelectorAll('section'))
     .find(s => s.querySelector('h2')?.textContent.includes('About NOVA RUSH'));
 
@@ -1422,7 +1423,9 @@ document.getElementById("auth-login").onclick = async () => {
   if (account) {
     overlay.querySelector('#nm-account-slot').appendChild(account);
   }
-
+if (verification) {
+  overlay.querySelector('#nm-account-slot').appendChild(verification);
+}
   if (about) {
     overlay.querySelector('#nm-about-slot').appendChild(about);
     about.style.setProperty('display', 'block', 'important');
